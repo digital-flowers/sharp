@@ -1,50 +1,27 @@
-# sharp
+# sharp for windows 32
 
-The typical use case for this high speed Node.js module
-is to convert large images of many formats to
-smaller, web-friendly JPEG, PNG and WebP images of varying dimensions.
+#### NOTE: This version of sharp only for Windows 32-bit system, for Windows 64-bit version or another OS - please see https://github.com/lovell/sharp
 
-Resizing an image is typically 4x faster than using the
-quickest ImageMagick and GraphicsMagick settings.
+original sharp module author decided to stop supporting Windows 32bit version automatic installation 
+but i think windows 32bit version could still be useful specially in case 
+you are building desktop application using web technology such as Node Webkit or Electron
 
-Colour spaces, embedded ICC profiles and alpha transparency channels are all handled correctly.
-Bicubic interpolation with Lanczos anti-alias filtering ensures quality is not sacrificed for speed.
+This version also using **libvips version 8.4** that fixed the windows unicode file paths issue: https://github.com/jcupitt/libvips/issues/294
 
-As well as image resizing, operations such as
-rotation, extraction, compositing and gamma correction are available.
+this is a fork from https://github.com/lovell/sharp so for documentation please visit the original module github page   
 
-Most Windows (x64), Linux and ARMv6+ systems do not require
-the installation of any external runtime dependencies.
+### how to install
+`npm install git+https://git@github.com/digital-flowers/sharp-win32.git --save`
 
-Use with OS X is as simple as running `brew install homebrew/science/vips`
-to install the libvips dependency.
+if you are using this module with **node webkit** it is better to compile it with nw-gyp module as follow:
 
-[![Test Coverage](https://coveralls.io/repos/lovell/sharp/badge.png?branch=master)](https://coveralls.io/r/lovell/sharp?branch=master)
+1- installing nw-gyp
+`npm install nw-gyp -g`
 
-### Documentation
+2- install this module without compiling
+`npm install git+https://git@github.com/digital-flowers/sharp-win32.git --save --ignore-scripts`
 
-Visit [sharp.dimens.io](http://sharp.dimens.io/) for complete
-[installation instructions](http://sharp.dimens.io/page/install),
-[API documentation](http://sharp.dimens.io/page/api),
-[benchmark tests](http://sharp.dimens.io/page/performance) and
-[changelog](http://sharp.dimens.io/page/changelog).
+3- compile the module
+`nw-gyp --runtime=node-webkit --target_arch=ia32 --target=0.17.4 configure rebuild`
 
-### Contributing
-
-A [guide for contributors](https://github.com/lovell/sharp/blob/master/CONTRIBUTING.md)
-covers reporting bugs, requesting features and submitting code changes.
-
-### Licence
-
-Copyright 2013, 2014, 2015, 2016 Lovell Fuller and contributors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+**0.17.4 is the node webkit version that you are using**
