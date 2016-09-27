@@ -6,7 +6,7 @@
         # Build libvips C++ binding for Windows due to MSVC std library ABI changes
         'type': 'shared_library',
         'variables': {
-          'download_vips': '<!(node -e "require(\'./binding\').download_vips()")'
+          'check_win32': '<!(node -e "require(\'./binding\').check_win32()")'
         },
         'defines': [
           'VIPS_CPLUSPLUS_EXPORTS'
@@ -124,7 +124,7 @@
           }],
           ['OS == "linux"', {
             'variables': {
-              'download_vips': '<!(LDD_VERSION="<!(ldd --version 2>&1 || true)" node -e "require(\'./binding\').download_vips()")'
+              'check_win32': '<!(LDD_VERSION="<!(ldd --version 2>&1 || true)" node -e "require(\'./binding\').check_win32()")'
             },
             'libraries': [
               '<(module_root_dir)/lib/libvips-cpp.so',
