@@ -42,10 +42,30 @@ describe('Threshold', function() {
       });
   });
 
-   it('threshold true (=128)', function(done) {
+  it('threshold true (=128)', function(done) {
     sharp(fixtures.inputJpg)
       .resize(320, 240)
       .threshold(true)
+      .toBuffer(function(err, data, info) {
+        assert.strictEqual('jpeg', info.format);
+        assert.strictEqual(320, info.width);
+        assert.strictEqual(240, info.height);
+        fixtures.assertSimilar(fixtures.expected('threshold-128.jpg'), data, done);
+      });
+  });
+
+  it('threshold false (=0)', function(done) {
+    sharp(fixtures.inputJpg)
+      .threshold(false)
+      .toBuffer(function(err, data, info) {
+        fixtures.assertSimilar(fixtures.inputJpg, data, done);
+      });
+  });
+
+  it('threshold grayscale: true (=128)', function(done) {
+    sharp(fixtures.inputJpg)
+      .resize(320, 240)
+      .threshold(128, { grayscale: true } )
       .toBuffer(function(err, data, info) {
         assert.strictEqual('jpeg', info.format);
         assert.strictEqual(320, info.width);
@@ -96,20 +116,32 @@ describe('Threshold', function() {
         .threshold()
         .toBuffer(function(err, data, info) {
           assert.strictEqual('webp', info.format);
-          fixtures.assertSimilar(fixtures.expected('threshold-128-transparency.webp'), data, { threshold: 14 }, done);
+          fixtures.assertSimilar(fixtures.expected('threshold-128-transparency.webp'), data, done);
         });
     });
   }
 
+  it('color threshold', function(done) {
+    sharp(fixtures.inputJpg)
+      .resize(320, 240)
+      .threshold(128,{'grayscale':false})
+      .toBuffer(function(err, data, info) {
+        assert.strictEqual('jpeg', info.format);
+        assert.strictEqual(320, info.width);
+        assert.strictEqual(240, info.height);
+        fixtures.assertSimilar(fixtures.expected('threshold-color-128.jpg'), data, done);
+      });    
+  });
+
   it('invalid threshold -1', function() {
     assert.throws(function() {
-      sharp(fixtures.inputJpg).threshold(-1);
+      sharp().threshold(-1);
     });
   });
 
   it('invalid threshold 256', function() {
     assert.throws(function() {
-      sharp(fixtures.inputJpg).threshold(256);
+      sharp().threshold(256);
     });
   });
 });

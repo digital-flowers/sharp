@@ -14,7 +14,7 @@ describe('Partial image extraction', function() {
         if (err) throw err;
         assert.strictEqual(20, info.width);
         assert.strictEqual(20, info.height);
-        fixtures.assertSimilar(fixtures.expected('extract.jpg'), data, done);
+        fixtures.assertSimilar(fixtures.expected('extract.jpg'), data, { threshold: 8 }, done);
       });
   });
 
@@ -174,6 +174,16 @@ describe('Partial image extraction', function() {
       assert.throws(function() {
         sharp(fixtures.inputJpg).extract({ left: 10, top: 10, width: 10, height: null });
       });
+    });
+
+    it('Bad image area', function(done) {
+      sharp(fixtures.inputJpg)
+        .extract({ left: 3000, top: 10, width: 10, height: 10 })
+        .toBuffer(function(err) {
+          assert(err instanceof Error);
+          assert.strictEqual(err.message, "extract_area: bad extract area\n");
+          done();
+        });
     });
   });
 });

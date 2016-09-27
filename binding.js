@@ -20,21 +20,20 @@ var vipsHeaderPath = path.join(__dirname, 'include', 'vips', 'vips.h');
 // -- Helpers
 
 // Does this file exist?
-var isFile = function (file) {
+var isFile = function(file) {
   var exists = false;
   try {
     exists = fs.statSync(file).isFile();
-  } catch (err) {
-  }
+  } catch (err) {}
   return exists;
 };
 
-var unpack = function (tarPath, done) {
+var unpack = function(tarPath, done) {
   var extractor = tar.Extract({
     path: __dirname
   });
   extractor.on('error', error);
-  extractor.on('end', function () {
+  extractor.on('end', function() {
     if (!isFile(vipsHeaderPath)) {
       error('Could not unpack ' + tarPath);
     }
@@ -47,8 +46,26 @@ var unpack = function (tarPath, done) {
     .pipe(extractor);
 };
 
+var platformId = function() {
+  var id = [process.platform, process.arch].join('-');
+  if (process.arch === 'arm') {
+    switch(process.config.variables.arm_version) {
+      case '8':
+        id = id + 'v8';
+        break;
+      case '7':
+        id = id + 'v7';
+        break;
+      default:
+        id = id + 'v6';
+        break;
+    }
+  }
+  return id;
+};
+
 // Error
-var error = function (msg) {
+var error = function(msg) {
   if (msg instanceof Error) {
     msg = msg.message;
   }
@@ -56,7 +73,7 @@ var error = function (msg) {
   process.exit(1);
 };
 
-// -- Check if win 32bit
+// -- Binary downloaders
 
 module.exports.check_win32 = function () {
   // Ensure Intel 32-bit or ARM
@@ -65,7 +82,7 @@ module.exports.check_win32 = function () {
   }
 };
 
-module.exports.use_global_vips = function () {
+module.exports.use_global_vips = function() {
   var useGlobalVips = false;
   var globalVipsVersion = process.env.GLOBAL_VIPS_VERSION;
   if (globalVipsVersion) {
@@ -73,16 +90,6 @@ module.exports.use_global_vips = function () {
       globalVipsVersion,
       minimumLibvipsVersion
     );
-  }
-  if (process.platform === 'darwin' && !useGlobalVips) {
-    if (globalVipsVersion) {
-      error(
-        'Found libvips ' + globalVipsVersion + ' but require ' + minimumLibvipsVersion +
-        '\nPlease upgrade libvips by running: brew update && brew upgrade'
-      );
-    } else {
-      error('Please install libvips by running: brew install homebrew/science/vips --with-webp --with-graphicsmagick');
-    }
   }
   process.stdout.write(useGlobalVips ? 'true' : 'false');
 };

@@ -42,14 +42,8 @@ var Sharp = function(input, options) {
   stream.Duplex.call(this);
   this.options = {
     // input options
-    bufferIn: null,
-    streamIn: false,
     sequentialRead: false,
     limitInputPixels: maximum.pixels,
-    density: 72,
-    rawWidth: 0,
-    rawHeight: 0,
-    rawChannels: 0,
     // ICC profiles
     iccProfilePath: path.join(__dirname, 'icc') + path.sep,
     // resize options
@@ -74,23 +68,31 @@ var Sharp = function(input, options) {
     extendLeft: 0,
     extendRight: 0,
     withoutEnlargement: false,
+    kernel: 'lanczos3',
     interpolator: 'bicubic',
     // operations
     background: [0, 0, 0, 255],
     flatten: false,
     negate: false,
     blurSigma: 0,
-    sharpenRadius: 0,
+    sharpenSigma: 0,
     sharpenFlat: 1,
     sharpenJagged: 2,
     threshold: 0,
+    thresholdGrayscale: true,
+    trimTolerance: 0,
     gamma: 0,
     greyscale: false,
     normalize: 0,
+    booleanBufferIn: null,
+    booleanFileIn: '',
+    joinChannelIn: [],
     // overlay
-    overlayFileIn: '',
-    overlayBufferIn: null,
     overlayGravity: 0,
+    overlayXOffset : -1,
+    overlayYOffset : -1,
+    overlayTile: false,
+    overlayCutout: false,
     // output options
     formatOut: 'input',
     fileOut: '',
@@ -107,24 +109,14 @@ var Sharp = function(input, options) {
     withMetadataOrientation: -1,
     tileSize: 256,
     tileOverlap: 0,
+    extractChannel: -1,
+    colourspace: 'srgb',
     // Function to notify of queue length changes
     queueListener: function(queueLength) {
       module.exports.queue.emit('change', queueLength);
     }
   };
-  if (isString(input)) {
-    // input=file
-    this.options.fileIn = input;
-  } else if (isBuffer(input)) {
-    // input=buffer
-    this.options.bufferIn = input;
-  } else if (!isDefined(input)) {
-    // input=stream
-    this.options.streamIn = true;
-  } else {
-    throw new Error('Unsupported input ' + typeof input);
-  }
-  this._inputOptions(options);
+  this.options.input = this._createInputDescriptor(input, options, { allowStream: true });
   return this;
 };
 module.exports = Sharp;
@@ -154,14 +146,20 @@ var isDefined = function(val) {
 var isObject = function(val) {
   return typeof val === 'object';
 };
+var isBoolean = function(val) {
+  return typeof val === 'boolean';
+};
 var isBuffer = function(val) {
   return typeof val === 'object' && val instanceof Buffer;
 };
 var isString = function(val) {
   return typeof val === 'string' && val.length > 0;
 };
+var isNumber = function(val) {
+  return typeof val === 'number' && !Number.isNaN(val);
+};
 var isInteger = function(val) {
-  return typeof val === 'number' && !Number.isNaN(val) && val % 1 === 0;
+  return isNumber(val) && val % 1 === 0;
 };
 var inRange = function(val, min, max) {
   return val >= min && val <= max;
@@ -171,37 +169,50 @@ var contains = function(val, list) {
 };
 
 /*
-  Set input-related options
-    density: DPI at which to load vector images via libmagick
+  Create Object containing input and input-related options
 */
-Sharp.prototype._inputOptions = function(options) {
-  if (isObject(options)) {
+Sharp.prototype._createInputDescriptor = function(input, inputOptions, containerOptions) {
+  var inputDescriptor = {};
+  if (isString(input)) {
+    // filesystem
+    inputDescriptor.file = input;
+  } else if (isBuffer(input)) {
+    // Buffer
+    inputDescriptor.buffer = input;
+  } else if (!isDefined(input) && isObject(containerOptions) && containerOptions.allowStream) {
+    // Stream
+    inputDescriptor.buffer = [];
+  } else {
+    throw new Error('Unsupported input ' + typeof input);
+  }
+  if (isObject(inputOptions)) {
     // Density
-    if (isDefined(options.density)) {
-      if (isInteger(options.density) && inRange(options.density, 1, 2400)) {
-        this.options.density = options.density;
+    if (isDefined(inputOptions.density)) {
+      if (isInteger(inputOptions.density) && inRange(inputOptions.density, 1, 2400)) {
+        inputDescriptor.density = inputOptions.density;
       } else {
-        throw new Error('Invalid density (1 to 2400) ' + options.density);
+        throw new Error('Invalid density (1 to 2400) ' + inputOptions.density);
       }
     }
     // Raw pixel input
-    if (isDefined(options.raw)) {
+    if (isDefined(inputOptions.raw)) {
       if (
-        isObject(options.raw) &&
-        isInteger(options.raw.width) && inRange(options.raw.width, 1, maximum.width) &&
-        isInteger(options.raw.height) && inRange(options.raw.height, 1, maximum.height) &&
-        isInteger(options.raw.channels) && inRange(options.raw.channels, 1, 4)
+        isObject(inputOptions.raw) &&
+        isInteger(inputOptions.raw.width) && inRange(inputOptions.raw.width, 1, maximum.width) &&
+        isInteger(inputOptions.raw.height) && inRange(inputOptions.raw.height, 1, maximum.height) &&
+        isInteger(inputOptions.raw.channels) && inRange(inputOptions.raw.channels, 1, 4)
       ) {
-        this.options.rawWidth = options.raw.width;
-        this.options.rawHeight = options.raw.height;
-        this.options.rawChannels = options.raw.channels;
+        inputDescriptor.rawWidth = inputOptions.raw.width;
+        inputDescriptor.rawHeight = inputOptions.raw.height;
+        inputDescriptor.rawChannels = inputOptions.raw.channels;
       } else {
         throw new Error('Expected width, height and channels for raw pixel input');
       }
     }
-  } else if (isDefined(options)) {
-    throw new Error('Invalid input options ' + options);
+  } else if (isDefined(inputOptions)) {
+    throw new Error('Invalid input options ' + inputOptions);
   }
+  return inputDescriptor;
 };
 
 /*
@@ -209,19 +220,9 @@ Sharp.prototype._inputOptions = function(options) {
 */
 Sharp.prototype._write = function(chunk, encoding, callback) {
   /*jslint unused: false */
-  if (this.options.streamIn) {
-    if (typeof chunk === 'object' && chunk instanceof Buffer) {
-      if (this.options.bufferIn instanceof Buffer) {
-        // Append to existing Buffer
-        this.options.bufferIn = Buffer.concat(
-          [this.options.bufferIn, chunk],
-          this.options.bufferIn.length + chunk.length
-        );
-      } else {
-        // Create new Buffer
-        this.options.bufferIn = new Buffer(chunk.length);
-        chunk.copy(this.options.bufferIn);
-      }
+  if (Array.isArray(this.options.input.buffer)) {
+    if (isBuffer(chunk)) {
+      this.options.input.buffer.push(chunk);
       callback();
     } else {
       callback(new Error('Non-Buffer data on Writable Stream'));
@@ -229,6 +230,18 @@ Sharp.prototype._write = function(chunk, encoding, callback) {
   } else {
     callback(new Error('Unexpected data on Writable Stream'));
   }
+};
+
+/*
+  Flattens the array of chunks accumulated in input.buffer
+*/
+Sharp.prototype._flattenBufferIn = function() {
+  if (this._isStreamInput()) {
+    this.options.input.buffer = Buffer.concat(this.options.input.buffer);
+  }
+};
+Sharp.prototype._isStreamInput = function() {
+  return Array.isArray(this.options.input.buffer);
 };
 
 // Weighting to apply to image crop
@@ -290,6 +303,21 @@ Sharp.prototype.extract = function(options) {
   return this;
 };
 
+Sharp.prototype.extractChannel = function(channel) {
+  if (channel === 'red')
+    channel = 0;
+  else if (channel === 'green')
+    channel = 1;
+  else if (channel === 'blue')
+    channel = 2;
+  if(isInteger(channel) && inRange(channel,0,4)) {
+    this.options.extractChannel = channel;
+  } else {
+    throw new Error('Cannot extract invalid channel ' + channel);
+  }
+  return this;
+};
+
 /*
   Set the background colour for embed and flatten operations.
   Delegates to the 'Color' module, which can throw an Error
@@ -327,12 +355,25 @@ Sharp.prototype.ignoreAspectRatio = function() {
 };
 
 Sharp.prototype.flatten = function(flatten) {
-  this.options.flatten = (typeof flatten === 'boolean') ? flatten : true;
+  this.options.flatten = isBoolean(flatten) ? flatten : true;
   return this;
 };
 
 Sharp.prototype.negate = function(negate) {
-  this.options.negate = (typeof negate === 'boolean') ? negate : true;
+  this.options.negate = isBoolean(negate) ? negate : true;
+  return this;
+};
+
+/*
+  Bitwise boolean operations between images
+*/
+Sharp.prototype.boolean = function(operand, operator, options) {
+  this.options.boolean = this._createInputDescriptor(operand, options);
+  if (isString(operator) && contains(operator, ['and', 'or', 'eor'])) {
+    this.options.booleanOp = operator;
+  } else {
+    throw new Error('Invalid boolean operation ' + operator);
+  }
   return this;
 };
 
@@ -340,21 +381,58 @@ Sharp.prototype.negate = function(negate) {
   Overlay with another image, using an optional gravity
 */
 Sharp.prototype.overlayWith = function(overlay, options) {
-  if (isString(overlay)) {
-    this.options.overlayFileIn = overlay;
-  } else if (isBuffer(overlay)) {
-    this.options.overlayBufferIn = overlay;
-  } else {
-    throw new Error('Unsupported overlay ' + typeof overlay);
-  }
+  this.options.overlay = this._createInputDescriptor(overlay, options, {
+    allowStream: false
+  });
   if (isObject(options)) {
-    if (isInteger(options.gravity) && inRange(options.gravity, 0, 8)) {
-      this.options.overlayGravity = options.gravity;
-    } else if (isString(options.gravity) && isInteger(module.exports.gravity[options.gravity])) {
-      this.options.overlayGravity = module.exports.gravity[options.gravity];
-    } else if (isDefined(options.gravity)) {
-      throw new Error('Unsupported overlay gravity ' + options.gravity);
+    if (isDefined(options.tile)) {
+      if (isBoolean(options.tile)) {
+        this.options.overlayTile = options.tile;
+      } else {
+        throw new Error('Invalid overlay tile ' + options.tile);
+      }
     }
+    if (isDefined(options.cutout)) {
+      if (isBoolean(options.cutout)) {
+        this.options.overlayCutout = options.cutout;
+      } else {
+        throw new Error('Invalid overlay cutout ' + options.cutout);
+      }
+    }
+    if (isDefined(options.left) || isDefined(options.top)) {
+      if (
+        isInteger(options.left) && inRange(options.left, 0, maximum.width) &&
+        isInteger(options.top) && inRange(options.top, 0, maximum.height)
+      ) {
+        this.options.overlayXOffset = options.left;
+        this.options.overlayYOffset = options.top;
+      } else {
+        throw new Error('Invalid overlay left ' + options.left + ' and/or top ' + options.top);
+      }
+    }
+    if (isDefined(options.gravity)) {
+      if(isInteger(options.gravity) && inRange(options.gravity, 0, 8)) {
+        this.options.overlayGravity = options.gravity;
+      } else if (isString(options.gravity) && isInteger(module.exports.gravity[options.gravity])) {
+        this.options.overlayGravity = module.exports.gravity[options.gravity];
+      } else {
+        throw new Error('Unsupported overlay gravity ' + options.gravity);
+      }
+    }
+  }
+  return this;
+};
+
+/*
+  Add another color channel to the image
+*/
+Sharp.prototype.joinChannel = function(images, options) {
+  if (Array.isArray(images)) {
+    images.forEach(function(image) {
+      this.options.joinChannelIn.push(this._createInputDescriptor(image, options));
+    }, this);
+  } else {
+    this.options.joinChannelIn.push(this._createInputDescriptor(images, options));
   }
   return this;
 };
@@ -364,9 +442,9 @@ Sharp.prototype.overlayWith = function(overlay, options) {
   Auto-rotation based on the EXIF Orientation tag is represented by an angle of -1
 */
 Sharp.prototype.rotate = function(angle) {
-  if (typeof angle === 'undefined') {
+  if (!isDefined(angle)) {
     this.options.angle = -1;
-  } else if (!Number.isNaN(angle) && [0, 90, 180, 270].indexOf(angle) !== -1) {
+  } else if (isInteger(angle) && contains(angle, [0, 90, 180, 270])) {
     this.options.angle = angle;
   } else {
     throw new Error('Unsupported angle (0, 90, 180, 270) ' + angle);
@@ -378,7 +456,7 @@ Sharp.prototype.rotate = function(angle) {
   Flip the image vertically, about the Y axis
 */
 Sharp.prototype.flip = function(flip) {
-  this.options.flip = (typeof flip === 'boolean') ? flip : true;
+  this.options.flip = isBoolean(flip) ? flip : true;
   return this;
 };
 
@@ -386,7 +464,7 @@ Sharp.prototype.flip = function(flip) {
   Flop the image horizontally, about the X axis
 */
 Sharp.prototype.flop = function(flop) {
-  this.options.flop = (typeof flop === 'boolean') ? flop : true;
+  this.options.flop = isBoolean(flop) ? flop : true;
   return this;
 };
 
@@ -396,7 +474,7 @@ Sharp.prototype.flop = function(flop) {
     "change the dimensions of the image only if its width or height exceeds the geometry specification"
 */
 Sharp.prototype.withoutEnlargement = function(withoutEnlargement) {
-  this.options.withoutEnlargement = (typeof withoutEnlargement === 'boolean') ? withoutEnlargement : true;
+  this.options.withoutEnlargement = isBoolean(withoutEnlargement) ? withoutEnlargement : true;
   return this;
 };
 
@@ -406,18 +484,47 @@ Sharp.prototype.withoutEnlargement = function(withoutEnlargement) {
   Call with a sigma to use a slower, more accurate Gaussian blur.
 */
 Sharp.prototype.blur = function(sigma) {
-  if (typeof sigma === 'undefined') {
+  if (!isDefined(sigma)) {
     // No arguments: default to mild blur
     this.options.blurSigma = -1;
-  } else if (typeof sigma === 'boolean') {
+  } else if (isBoolean(sigma)) {
     // Boolean argument: apply mild blur?
     this.options.blurSigma = sigma ? -1 : 0;
-  } else if (typeof sigma === 'number' && !Number.isNaN(sigma) && sigma >= 0.3 && sigma <= 1000) {
+  } else if (isNumber(sigma) && inRange(sigma, 0.3, 1000)) {
     // Numeric argument: specific sigma
     this.options.blurSigma = sigma;
   } else {
-    throw new Error('Invalid blur sigma (0.3 to 1000.0) ' + sigma);
+    throw new Error('Invalid blur sigma (0.3 - 1000.0) ' + sigma);
   }
+  return this;
+};
+
+/*
+  Convolve the image with a kernel.
+*/
+Sharp.prototype.convolve = function(kernel) {
+  if (!isObject(kernel) || !Array.isArray(kernel.kernel) ||
+      !isInteger(kernel.width) || !isInteger(kernel.height) ||
+      !inRange(kernel.width, 3, 1001) || !inRange(kernel.height, 3, 1001) ||
+      kernel.height * kernel.width != kernel.kernel.length
+     ) {
+    // must pass in a kernel
+    throw new Error('Invalid convolution kernel');
+  }
+  // Default scale is sum of kernel values
+  if (!isInteger(kernel.scale)) {
+    kernel.scale = kernel.kernel.reduce(function(a, b) {
+      return a + b;
+    }, 0);
+  }
+  // Clamp scale to a minimum value of 1
+  if (kernel.scale < 1) {
+    kernel.scale = 1;
+  }
+  if (!isInteger(kernel.offset)) {
+    kernel.offset = 0;
+  }
+  this.options.convKernel = kernel;
   return this;
 };
 
@@ -425,78 +532,72 @@ Sharp.prototype.blur = function(sigma) {
   Sharpen the output image.
   Call without a radius to use a fast, mild sharpen.
   Call with a radius to use a slow, accurate sharpen using the L of LAB colour space.
-    radius - size of mask in pixels, must be integer
+    sigma - sigma of mask
     flat - level of "flat" area sharpen, default 1
     jagged - level of "jagged" area sharpen, default 2
 */
-Sharp.prototype.sharpen = function(radius, flat, jagged) {
-  if (typeof radius === 'undefined') {
+Sharp.prototype.sharpen = function(sigma, flat, jagged) {
+  if (!isDefined(sigma)) {
     // No arguments: default to mild sharpen
-    this.options.sharpenRadius = -1;
-  } else if (typeof radius === 'boolean') {
+    this.options.sharpenSigma = -1;
+  } else if (isBoolean(sigma)) {
     // Boolean argument: apply mild sharpen?
-    this.options.sharpenRadius = radius ? -1 : 0;
-  } else if (typeof radius === 'number' && !Number.isNaN(radius) && (radius % 1 === 0) && radius >= 1) {
-    // Numeric argument: specific radius
-    this.options.sharpenRadius = radius;
+    this.options.sharpenSigma = sigma ? -1 : 0;
+  } else if (isNumber(sigma) && inRange(sigma, 0.01, 10000)) {
+    // Numeric argument: specific sigma
+    this.options.sharpenSigma = sigma;
     // Control over flat areas
-    if (typeof flat !== 'undefined' && flat !== null) {
-      if (typeof flat === 'number' && !Number.isNaN(flat) && flat >= 0) {
+    if (isDefined(flat)) {
+      if (isNumber(flat) && inRange(flat, 0, 10000)) {
         this.options.sharpenFlat = flat;
       } else {
-        throw new Error('Invalid sharpen level for flat areas ' + flat + ' (expected >= 0)');
+        throw new Error('Invalid sharpen level for flat areas (0 - 10000) ' + flat);
       }
     }
     // Control over jagged areas
-    if (typeof jagged !== 'undefined' && jagged !== null) {
-      if (typeof jagged === 'number' && !Number.isNaN(jagged) && jagged >= 0) {
+    if (isDefined(jagged)) {
+      if (isNumber(jagged) && inRange(jagged, 0, 10000)) {
         this.options.sharpenJagged = jagged;
       } else {
-        throw new Error('Invalid sharpen level for jagged areas ' + jagged + ' (expected >= 0)');
+        throw new Error('Invalid sharpen level for jagged areas (0 - 10000) ' + jagged);
       }
     }
   } else {
-    throw new Error('Invalid sharpen radius ' + radius + ' (expected integer >= 1)');
+    throw new Error('Invalid sharpen sigma (0.01 - 10000) ' + sigma);
   }
   return this;
 };
 
-Sharp.prototype.threshold = function(threshold) {
-  if (typeof threshold === 'undefined') {
+Sharp.prototype.threshold = function(threshold, options) {
+  if (!isDefined(threshold)) {
     this.options.threshold = 128;
-  } else if (typeof threshold === 'boolean') {
+  } else if (isBoolean(threshold)) {
     this.options.threshold = threshold ? 128 : 0;
-  } else if (typeof threshold === 'number' && !Number.isNaN(threshold) && (threshold % 1 === 0) && threshold >= 0 && threshold <= 255) {
+  } else if (isInteger(threshold) && inRange(threshold, 0, 255)) {
     this.options.threshold = threshold;
   } else {
     throw new Error('Invalid threshold (0 to 255) ' + threshold);
+  }
+  if (!isObject(options) || options.greyscale === true || options.grayscale === true) {
+    this.options.thresholdGrayscale = true;
+  } else {
+    this.options.thresholdGrayscale = false;
   }
   return this;
 };
 
 /*
-  Set the interpolator to use for the affine transformation
-*/
-module.exports.interpolator = {
-  nearest: 'nearest',
-  bilinear: 'bilinear',
-  bicubic: 'bicubic',
-  nohalo: 'nohalo',
-  locallyBoundedBicubic: 'lbb',
-  vertexSplitQuadraticBasisSpline: 'vsqbs'
-};
-Sharp.prototype.interpolateWith = function(interpolator) {
-  var isValid = false;
-  for (var key in module.exports.interpolator) {
-    if (module.exports.interpolator[key] === interpolator) {
-      isValid = true;
-      break;
-    }
-  }
-  if (isValid) {
-    this.options.interpolator = interpolator;
+  Automatically remove "boring" image edges.
+    tolerance - if present, is a percentaged tolerance level between 0 and 100 to trim away similar color values
+      Defaulting to 10 when no tolerance is given.
+ */
+Sharp.prototype.trim = function(tolerance) {
+  if (!isDefined(tolerance)) {
+    this.options.trimTolerance = 10;
+  } else if (isInteger(tolerance) && inRange(tolerance, 1, 99)) {
+    this.options.trimTolerance = tolerance;
   } else {
-    throw new Error('Invalid interpolator ' + interpolator);
+    throw new Error('Invalid trim tolerance (1 to 99) ' + tolerance);
   }
   return this;
 };
@@ -506,10 +607,10 @@ Sharp.prototype.interpolateWith = function(interpolator) {
   Improves brightness of resized image in non-linear colour spaces.
 */
 Sharp.prototype.gamma = function(gamma) {
-  if (typeof gamma === 'undefined') {
+  if (!isDefined(gamma)) {
     // Default gamma correction of 2.2 (sRGB)
     this.options.gamma = 2.2;
-  } else if (!Number.isNaN(gamma) && gamma >= 1 && gamma <= 3) {
+  } else if (isNumber(gamma) && inRange(gamma, 1, 3)) {
     this.options.gamma = gamma;
   } else {
     throw new Error('Invalid gamma correction (1.0 to 3.0) ' + gamma);
@@ -521,32 +622,56 @@ Sharp.prototype.gamma = function(gamma) {
   Enhance output image contrast by stretching its luminance to cover the full dynamic range
 */
 Sharp.prototype.normalize = function(normalize) {
-  this.options.normalize = (typeof normalize === 'boolean') ? normalize : true;
+  this.options.normalize = isBoolean(normalize) ? normalize : true;
   return this;
 };
 Sharp.prototype.normalise = Sharp.prototype.normalize;
 
 /*
+  Perform boolean/bitwise operation on image color channels - results in one channel image
+*/
+Sharp.prototype.bandbool = function(boolOp) {
+  if (isString(boolOp) && contains(boolOp, ['and', 'or', 'eor'])) {
+    this.options.bandBoolOp = boolOp;
+  } else {
+    throw new Error('Invalid bandbool operation ' + boolOp);
+  }
+  return this;
+};
+
+/*
   Convert to greyscale
 */
 Sharp.prototype.greyscale = function(greyscale) {
-  this.options.greyscale = (typeof greyscale === 'boolean') ? greyscale : true;
+  this.options.greyscale = isBoolean(greyscale) ? greyscale : true;
   return this;
 };
 Sharp.prototype.grayscale = Sharp.prototype.greyscale;
 
+/*
+  Set output colourspace
+*/
+Sharp.prototype.toColourspace = function(colourspace) {
+  if (!isString(colourspace) ) {
+    throw new Error('Invalid output colourspace ' + colourspace);
+  }
+  this.options.colourspace = colourspace;
+  return this;
+};
+Sharp.prototype.toColorspace = Sharp.prototype.toColourspace;
+
 Sharp.prototype.progressive = function(progressive) {
-  this.options.progressive = (typeof progressive === 'boolean') ? progressive : true;
+  this.options.progressive = isBoolean(progressive) ? progressive : true;
   return this;
 };
 
 Sharp.prototype.sequentialRead = function(sequentialRead) {
-  this.options.sequentialRead = (typeof sequentialRead === 'boolean') ? sequentialRead : true;
+  this.options.sequentialRead = isBoolean(sequentialRead) ? sequentialRead : true;
   return this;
 };
 
 Sharp.prototype.quality = function(quality) {
-  if (!Number.isNaN(quality) && quality >= 1 && quality <= 100 && quality % 1 === 0) {
+  if (isInteger(quality) && inRange(quality, 1, 100)) {
     this.options.quality = quality;
   } else {
     throw new Error('Invalid quality (1 to 100) ' + quality);
@@ -558,7 +683,7 @@ Sharp.prototype.quality = function(quality) {
   zlib compression level for PNG output
 */
 Sharp.prototype.compressionLevel = function(compressionLevel) {
-  if (!Number.isNaN(compressionLevel) && compressionLevel >= 0 && compressionLevel <= 9) {
+  if (isInteger(compressionLevel) && inRange(compressionLevel, 0, 9)) {
     this.options.compressionLevel = compressionLevel;
   } else {
     throw new Error('Invalid compressionLevel (0 to 9) ' + compressionLevel);
@@ -570,7 +695,7 @@ Sharp.prototype.compressionLevel = function(compressionLevel) {
   Disable the use of adaptive row filtering for PNG output
 */
 Sharp.prototype.withoutAdaptiveFiltering = function(withoutAdaptiveFiltering) {
-  this.options.withoutAdaptiveFiltering = (typeof withoutAdaptiveFiltering === 'boolean') ? withoutAdaptiveFiltering : true;
+  this.options.withoutAdaptiveFiltering = isBoolean(withoutAdaptiveFiltering) ? withoutAdaptiveFiltering : true;
   return this;
 };
 
@@ -578,7 +703,7 @@ Sharp.prototype.withoutAdaptiveFiltering = function(withoutAdaptiveFiltering) {
   Disable the use of chroma subsampling for JPEG output
 */
 Sharp.prototype.withoutChromaSubsampling = function(withoutChromaSubsampling) {
-  this.options.withoutChromaSubsampling = (typeof withoutChromaSubsampling === 'boolean') ? withoutChromaSubsampling : true;
+  this.options.withoutChromaSubsampling = isBoolean(withoutChromaSubsampling) ? withoutChromaSubsampling : true;
   return this;
 };
 
@@ -586,7 +711,7 @@ Sharp.prototype.withoutChromaSubsampling = function(withoutChromaSubsampling) {
   Apply trellis quantisation to JPEG output - requires mozjpeg 3.0+
 */
 Sharp.prototype.trellisQuantisation = function(trellisQuantisation) {
-  this.options.trellisQuantisation = (typeof trellisQuantisation === 'boolean') ? trellisQuantisation : true;
+  this.options.trellisQuantisation = isBoolean(trellisQuantisation) ? trellisQuantisation : true;
   return this;
 };
 Sharp.prototype.trellisQuantization = Sharp.prototype.trellisQuantisation;
@@ -595,7 +720,7 @@ Sharp.prototype.trellisQuantization = Sharp.prototype.trellisQuantisation;
   Apply overshoot deringing to JPEG output - requires mozjpeg 3.0+
 */
 Sharp.prototype.overshootDeringing = function(overshootDeringing) {
-  this.options.overshootDeringing = (typeof overshootDeringing === 'boolean') ? overshootDeringing : true;
+  this.options.overshootDeringing = isBoolean(overshootDeringing) ? overshootDeringing : true;
   return this;
 };
 
@@ -603,7 +728,7 @@ Sharp.prototype.overshootDeringing = function(overshootDeringing) {
   Optimise scans in progressive JPEG output - requires mozjpeg 3.0+
 */
 Sharp.prototype.optimiseScans = function(optimiseScans) {
-  this.options.optimiseScans = (typeof optimiseScans === 'boolean') ? optimiseScans : true;
+  this.options.optimiseScans = isBoolean(optimiseScans) ? optimiseScans : true;
   if (this.options.optimiseScans) {
     this.progressive();
   }
@@ -617,16 +742,10 @@ Sharp.prototype.optimizeScans = Sharp.prototype.optimiseScans;
     orientation: numeric value for EXIF Orientation tag
 */
 Sharp.prototype.withMetadata = function(withMetadata) {
-  this.options.withMetadata = (typeof withMetadata === 'boolean') ? withMetadata : true;
-  if (typeof withMetadata === 'object') {
-    if ('orientation' in withMetadata) {
-      if (
-        typeof withMetadata.orientation === 'number' &&
-        !Number.isNaN(withMetadata.orientation) &&
-        withMetadata.orientation % 1 === 0 &&
-        withMetadata.orientation >= 1 &&
-        withMetadata.orientation <= 8
-      ) {
+  this.options.withMetadata = isBoolean(withMetadata) ? withMetadata : true;
+  if (isObject(withMetadata)) {
+    if (isDefined(withMetadata.orientation)) {
+      if (isInteger(withMetadata.orientation) && inRange(withMetadata.orientation, 1, 8)) {
         this.options.withMetadataOrientation = withMetadata.orientation;
       } else {
         throw new Error('Invalid orientation (1 to 8) ' + withMetadata.orientation);
@@ -706,23 +825,79 @@ Sharp.prototype.extend = function(extend) {
   return this;
 };
 
-Sharp.prototype.resize = function(width, height) {
-  if (!width) {
-    this.options.width = -1;
-  } else {
-    if (typeof width === 'number' && !Number.isNaN(width) && width % 1 === 0 && width > 0 && width <= maximum.width) {
+// Kernels for reduction
+module.exports.kernel = {
+  cubic: 'cubic',
+  lanczos2: 'lanczos2',
+  lanczos3: 'lanczos3'
+};
+// Interpolators for enlargement
+module.exports.interpolator = {
+  nearest: 'nearest',
+  bilinear: 'bilinear',
+  bicubic: 'bicubic',
+  nohalo: 'nohalo',
+  lbb: 'lbb',
+  locallyBoundedBicubic: 'lbb',
+  vsqbs: 'vsqbs',
+  vertexSplitQuadraticBasisSpline: 'vsqbs'
+};
+// Boolean operations for bandbool
+module.exports.bool = {
+  and: 'and',
+  or: 'or',
+  eor: 'eor'
+};
+// Colourspaces
+module.exports.colourspace = {
+  multiband: 'multiband',
+  'b-w': 'b-w',
+  bw: 'b-w',
+  cmyk: 'cmyk',
+  srgb: 'srgb'
+};
+module.exports.colorspace = module.exports.colourspace;
+
+/*
+  Resize image to width x height pixels
+  options.kernel is the kernel to use for reductions, default 'lanczos3'
+  options.interpolator is the interpolator to use for enlargements, default 'bicubic'
+*/
+Sharp.prototype.resize = function(width, height, options) {
+  if (isDefined(width)) {
+    if (isInteger(width) && inRange(width, 1, maximum.width)) {
       this.options.width = width;
     } else {
       throw new Error('Invalid width (1 to ' + maximum.width + ') ' + width);
     }
-  }
-  if (!height) {
-    this.options.height = -1;
   } else {
-    if (typeof height === 'number' && !Number.isNaN(height) && height % 1 === 0 && height > 0 && height <= maximum.height) {
+    this.options.width = -1;
+  }
+  if (isDefined(height)) {
+    if (isInteger(height) && inRange(height, 1, maximum.height)) {
       this.options.height = height;
     } else {
       throw new Error('Invalid height (1 to ' + maximum.height + ') ' + height);
+    }
+  } else {
+    this.options.height = -1;
+  }
+  if (isObject(options)) {
+    // Kernel
+    if (isDefined(options.kernel)) {
+      if (isString(module.exports.kernel[options.kernel])) {
+        this.options.kernel = module.exports.kernel[options.kernel];
+      } else {
+        throw new Error('Invalid kernel ' + options.kernel);
+      }
+    }
+    // Interpolator
+    if (isDefined(options.interpolator)) {
+      if (isString(module.exports.interpolator[options.interpolator])) {
+        this.options.interpolator = module.exports.interpolator[options.interpolator];
+      } else {
+        throw new Error('Invalid interpolator ' + options.interpolator);
+      }
     }
   }
   return this;
@@ -760,7 +935,7 @@ Sharp.prototype.toFile = function(fileOut, callback) {
       return BluebirdPromise.reject(errOutputInvalid);
     }
   } else {
-    if (this.options.fileIn === fileOut) {
+    if (this.options.input.file === fileOut) {
       var errOutputIsInput = new Error('Cannot use same file for input and output');
       if (typeof callback === 'function') {
         callback(errOutputIsInput);
@@ -819,12 +994,11 @@ Sharp.prototype.raw = function() {
   @param format is either the id as a String or an Object with an 'id' attribute
 */
 Sharp.prototype.toFormat = function(formatOut) {
-  if (isObject(formatOut) && isDefined(formatOut.id)) {
-    formatOut = formatOut.id;
-  }
-  if (
-    isDefined(formatOut) &&
-    ['jpeg', 'png', 'webp', 'raw', 'tiff', 'dz', 'input'].indexOf(formatOut) !== -1
+  if (isObject(formatOut) && isString(formatOut.id)) {
+    this.options.formatOut = formatOut.id;
+  } else if (
+    isString(formatOut) &&
+    contains(formatOut, ['jpeg', 'png', 'webp', 'raw', 'tiff', 'dz', 'input'])
   ) {
     this.options.formatOut = formatOut;
   } else {
@@ -851,9 +1025,10 @@ Sharp.prototype._pipeline = function(callback) {
   var that = this;
   if (typeof callback === 'function') {
     // output=file/buffer
-    if (this.options.streamIn) {
+    if (this._isStreamInput()) {
       // output=file/buffer, input=stream
       this.on('finish', function() {
+        that._flattenBufferIn();
         sharp.pipeline(that.options, callback);
       });
     } else {
@@ -863,9 +1038,10 @@ Sharp.prototype._pipeline = function(callback) {
     return this;
   } else if (this.options.streamOut) {
     // output=stream
-    if (this.options.streamIn) {
+    if (this._isStreamInput()) {
       // output=stream, input=stream
       this.on('finish', function() {
+        that._flattenBufferIn();
         sharp.pipeline(that.options, function(err, data, info) {
           if (err) {
             that.emit('error', err);
@@ -891,10 +1067,11 @@ Sharp.prototype._pipeline = function(callback) {
     return this;
   } else {
     // output=promise
-    if (this.options.streamIn) {
+    if (this._isStreamInput()) {
       // output=promise, input=stream
       return new BluebirdPromise(function(resolve, reject) {
         that.on('finish', function() {
+          that._flattenBufferIn();
           sharp.pipeline(that.options, function(err, data) {
             if (err) {
               reject(err);
@@ -926,8 +1103,9 @@ Sharp.prototype._pipeline = function(callback) {
 Sharp.prototype.metadata = function(callback) {
   var that = this;
   if (typeof callback === 'function') {
-    if (this.options.streamIn) {
+    if (this._isStreamInput()) {
       this.on('finish', function() {
+        that._flattenBufferIn();
         sharp.metadata(that.options, callback);
       });
     } else {
@@ -935,9 +1113,10 @@ Sharp.prototype.metadata = function(callback) {
     }
     return this;
   } else {
-    if (this.options.streamIn) {
+    if (this._isStreamInput()) {
       return new BluebirdPromise(function(resolve, reject) {
         that.on('finish', function() {
+          that._flattenBufferIn();
           sharp.metadata(that.options, function(err, metadata) {
             if (err) {
               reject(err);
@@ -966,13 +1145,15 @@ Sharp.prototype.metadata = function(callback) {
   Cloned instances share the same input.
 */
 Sharp.prototype.clone = function() {
+  var that = this;
   // Clone existing options
   var clone = new Sharp();
   util._extend(clone.options, this.options);
   // Pass 'finish' event to clone for Stream-based input
   this.on('finish', function() {
     // Clone inherits input data
-    clone.options.bufferIn = this.options.bufferIn;
+    that._flattenBufferIn();
+    clone.options.bufferIn = that.options.bufferIn;
     clone.emit('finish');
   });
   return clone;
