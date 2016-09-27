@@ -25,8 +25,3 @@ if you are using this module with **node webkit** it is better to compile it wit
 `nw-gyp --runtime=node-webkit --target_arch=ia32 --target=0.17.4 configure rebuild`
 
 **0.17.4 is the node webkit version that you are using**
-
- **Compiling Note:**
- there is unicode bug in nw-gyp to fix it apply the following patch for nw-gyp before compilation:
- https://github.com/nwjs/nw-gyp/pull/93/files 
- apply this patch to the file `node_modules/nw-gyp/src/win_delay_load_hook.cc` inside global node_modules
