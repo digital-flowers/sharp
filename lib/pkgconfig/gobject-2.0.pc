@@ -1,0 +1,12 @@
+prefix=/home/build/inst
+exec_prefix=${prefix}
+libdir=/home/build/inst/lib
+includedir=${prefix}/include
+
+Name: GObject
+Description: GLib Type, Object, Parameter and Signal Library
+Requires: glib-2.0
+Version: 2.49.4
+Libs: -L${libdir} -lgobject-2.0
+Libs.private: -L/home/build/inst/lib/../lib -lffi 
+Cflags:

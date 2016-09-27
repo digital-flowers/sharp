@@ -1,0 +1,11 @@
+prefix=/home/build/inst
+exec_prefix=${prefix}
+libdir=/home/build/inst/lib
+toolexeclibdir=/home/build/inst/lib/../lib
+includedir=${libdir}/libffi-3.2.1/include
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.2.1
+Libs: -L${toolexeclibdir} -lffi
+Cflags: -I${includedir}

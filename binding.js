@@ -20,20 +20,21 @@ var vipsHeaderPath = path.join(__dirname, 'include', 'vips', 'vips.h');
 // -- Helpers
 
 // Does this file exist?
-var isFile = function(file) {
+var isFile = function (file) {
   var exists = false;
   try {
     exists = fs.statSync(file).isFile();
-  } catch (err) {}
+  } catch (err) {
+  }
   return exists;
 };
 
-var unpack = function(tarPath, done) {
+var unpack = function (tarPath, done) {
   var extractor = tar.Extract({
     path: __dirname
   });
   extractor.on('error', error);
-  extractor.on('end', function() {
+  extractor.on('end', function () {
     if (!isFile(vipsHeaderPath)) {
       error('Could not unpack ' + tarPath);
     }
@@ -47,7 +48,7 @@ var unpack = function(tarPath, done) {
 };
 
 // Error
-var error = function(msg) {
+var error = function (msg) {
   if (msg instanceof Error) {
     msg = msg.message;
   }
@@ -57,12 +58,12 @@ var error = function(msg) {
 
 // -- Binary downloaders
 
-module.exports.download_vips = function() {
+module.exports.download_vips = function () {
   // Has vips been installed locally?
   if (!isFile(vipsHeaderPath)) {
     // Ensure Intel 64-bit or ARM
-    if (process.arch === 'ia32') {
-      error('Intel Architecture 32-bit systems require manual installation - please see http://sharp.dimens.io/en/stable/install/');
+    if (require('os').platform() !== 'win32') {
+      error('This version of sharp only for Windows 32-bit system, for Windows 64-bit version or another OS - please see https://github.com/lovell/sharp');
     }
     // Ensure glibc >= 2.15
     var lddVersion = process.env.LDD_VERSION;
@@ -85,12 +86,13 @@ module.exports.download_vips = function() {
     } else {
       // Download to per-process temporary file
       tarPath = path.join(tmp, process.pid + '-' + tarFilename);
-      var tmpFile = fs.createWriteStream(tarPath).on('finish', function() {
-        unpack(tarPath, function() {
+      var tmpFile = fs.createWriteStream(tarPath).on('finish', function () {
+        unpack(tarPath, function () {
           // Attempt to remove temporary file
           try {
             fs.unlinkSync(tarPath);
-          } catch (err) {}
+          } catch (err) {
+          }
         });
       });
       var options = {
@@ -100,18 +102,18 @@ module.exports.download_vips = function() {
         // Use the NPM-configured HTTPS proxy
         options.proxy = process.env.npm_config_https_proxy;
       }
-      request(options).on('response', function(response) {
+      request(options).on('response', function (response) {
         if (response.statusCode !== 200) {
           error(distBaseUrl + tarFilename + ' status code ' + response.statusCode);
         }
-      }).on('error', function(err) {
+      }).on('error', function (err) {
         error('Download from ' + distBaseUrl + tarFilename + ' failed: ' + err.message);
       }).pipe(tmpFile);
     }
   }
 };
 
-module.exports.use_global_vips = function() {
+module.exports.use_global_vips = function () {
   var useGlobalVips = false;
   var globalVipsVersion = process.env.GLOBAL_VIPS_VERSION;
   if (globalVipsVersion) {

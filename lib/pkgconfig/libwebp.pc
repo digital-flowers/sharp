@@ -1,0 +1,11 @@
+prefix=/home/build/inst
+exec_prefix=${prefix}
+libdir=/home/build/inst/lib
+includedir=${prefix}/include
+
+Name: libwebp
+Description: Library for the WebP graphics format
+Version: 0.5.1
+Cflags: -I${includedir}
+Libs: -L${libdir} -lwebp
+Libs.private: -lm -pthread 
