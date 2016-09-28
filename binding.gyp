@@ -32,6 +32,9 @@
             'msvs_settings': {
               'VCCLCompilerTool': {
                 'ExceptionHandling': 1
+              },
+              'Link': {
+                'ImageHasSafeExceptionHandlers': 'false'
               }
             },
             'msvs_disabled_warnings': [
@@ -204,7 +207,10 @@
         'msvs_settings': {
           'VCCLCompilerTool': {
             'ExceptionHandling': 1
-          }
+          },
+           'Link': {
+            'ImageHasSafeExceptionHandlers': 'false'
+           }
         },
         'msvs_disabled_warnings': [
           4275
