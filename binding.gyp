@@ -33,8 +33,8 @@
               'VCCLCompilerTool': {
                 'ExceptionHandling': 1
               },
-              'Link': {
-                'ImageHasSafeExceptionHandlers': 'false'
+              'VCLinkerTool': {
+                'ImageHasSafeExceptionHandlers': 'false',
               }
             },
             'msvs_disabled_warnings': [
@@ -208,9 +208,9 @@
           'VCCLCompilerTool': {
             'ExceptionHandling': 1
           },
-           'Link': {
-            'ImageHasSafeExceptionHandlers': 'false'
-           }
+          'VCLinkerTool': {
+             'ImageHasSafeExceptionHandlers': 'false',
+          }
         },
         'msvs_disabled_warnings': [
           4275
