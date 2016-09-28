@@ -1823,8 +1823,8 @@ VImage VImage::shrink( double xshrink , double yshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "xshrink", xshrink ) ->
-            set( "yshrink", yshrink ) );
+            set( "hshrink", xshrink ) ->
+            set( "vshrink", yshrink ) );
 
     return( out );
 }
@@ -1850,7 +1850,7 @@ VImage VImage::shrinkv( int yshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "yshrink", yshrink ) );
+            set( "vshrink", yshrink ) );
 
     return( out );
 }
@@ -1876,7 +1876,7 @@ VImage VImage::reducev( double yshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "yshrink", yshrink ) );
+            set( "vshrink", yshrink ) );
 
     return( out );
 }
@@ -1889,8 +1889,8 @@ VImage VImage::reduce( double xshrink , double yshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "xshrink", xshrink ) ->
-            set( "yshrink", yshrink ) );
+            set( "hshrink", xshrink ) ->
+            set( "vshrink", yshrink ) );
 
     return( out );
 }
