@@ -229,7 +229,7 @@
         'copies': [{
           'destination': 'build/Release',
           'files': [
-            ''lib/GNU.Gettext.dll',
+             'lib/GNU.Gettext.dll',
              'lib/freetype6.dll',
              'lib/iconv.dll',
              'lib/intl.dll',
