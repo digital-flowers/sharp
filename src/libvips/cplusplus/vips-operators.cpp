@@ -1,5 +1,5 @@
 // bodies for vips operations
-// Thu 18 Aug 16:01:57 BST 2016
+// Sat Jan  9 15:05:58 GMT 2016
 // this file is generated automatically, do not edit!
 
 void VImage::system( char * cmd_format , VOption *options )
@@ -1321,28 +1321,26 @@ VImage VImage::fractsurf( int width , int height , double fractal_dimension , VO
     return( out );
 }
 
-VImage VImage::worley( int width , int height , VOption *options )
+VImage VImage::radload( char * filename , VOption *options )
 {
     VImage out;
 
-    call( "worley" ,
+    call( "radload" ,
         (options ? options : VImage::option()) ->
-            set( "out", &out ) ->
-            set( "width", width ) ->
-            set( "height", height ) );
+            set( "filename", filename ) ->
+            set( "out", &out ) );
 
     return( out );
 }
 
-VImage VImage::perlin( int width , int height , VOption *options )
+VImage VImage::ppmload( char * filename , VOption *options )
 {
     VImage out;
 
-    call( "perlin" ,
+    call( "ppmload" ,
         (options ? options : VImage::option()) ->
-            set( "out", &out ) ->
-            set( "width", width ) ->
-            set( "height", height ) );
+            set( "filename", filename ) ->
+            set( "out", &out ) );
 
     return( out );
 }
@@ -1364,6 +1362,18 @@ VImage VImage::matrixload( char * filename , VOption *options )
     VImage out;
 
     call( "matrixload" ,
+        (options ? options : VImage::option()) ->
+            set( "filename", filename ) ->
+            set( "out", &out ) );
+
+    return( out );
+}
+
+VImage VImage::analyzeload( char * filename , VOption *options )
+{
+    VImage out;
+
+    call( "analyzeload" ,
         (options ? options : VImage::option()) ->
             set( "filename", filename ) ->
             set( "out", &out ) );
@@ -1393,114 +1403,6 @@ VImage VImage::vipsload( char * filename , VOption *options )
     call( "vipsload" ,
         (options ? options : VImage::option()) ->
             set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::analyzeload( char * filename , VOption *options )
-{
-    VImage out;
-
-    call( "analyzeload" ,
-        (options ? options : VImage::option()) ->
-            set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::ppmload( char * filename , VOption *options )
-{
-    VImage out;
-
-    call( "ppmload" ,
-        (options ? options : VImage::option()) ->
-            set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::radload( char * filename , VOption *options )
-{
-    VImage out;
-
-    call( "radload" ,
-        (options ? options : VImage::option()) ->
-            set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::pdfload( char * filename , VOption *options )
-{
-    VImage out;
-
-    call( "pdfload" ,
-        (options ? options : VImage::option()) ->
-            set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::pdfload_buffer( VipsBlob * buffer , VOption *options )
-{
-    VImage out;
-
-    call( "pdfload_buffer" ,
-        (options ? options : VImage::option()) ->
-            set( "buffer", buffer ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::svgload( char * filename , VOption *options )
-{
-    VImage out;
-
-    call( "svgload" ,
-        (options ? options : VImage::option()) ->
-            set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::svgload_buffer( VipsBlob * buffer , VOption *options )
-{
-    VImage out;
-
-    call( "svgload_buffer" ,
-        (options ? options : VImage::option()) ->
-            set( "buffer", buffer ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::gifload( char * filename , VOption *options )
-{
-    VImage out;
-
-    call( "gifload" ,
-        (options ? options : VImage::option()) ->
-            set( "filename", filename ) ->
-            set( "out", &out ) );
-
-    return( out );
-}
-
-VImage VImage::gifload_buffer( VipsBlob * buffer , VOption *options )
-{
-    VImage out;
-
-    call( "gifload_buffer" ,
-        (options ? options : VImage::option()) ->
-            set( "buffer", buffer ) ->
             set( "out", &out ) );
 
     return( out );
@@ -1674,6 +1576,22 @@ VImage VImage::openexrload( char * filename , VOption *options )
     return( out );
 }
 
+void VImage::radsave( char * filename , VOption *options )
+{
+    call( "radsave" ,
+        (options ? options : VImage::option()) ->
+            set( "in", *this ) ->
+            set( "filename", filename ) );
+}
+
+void VImage::ppmsave( char * filename , VOption *options )
+{
+    call( "ppmsave" ,
+        (options ? options : VImage::option()) ->
+            set( "in", *this ) ->
+            set( "filename", filename ) );
+}
+
 void VImage::csvsave( char * filename , VOption *options )
 {
     call( "csvsave" ,
@@ -1719,34 +1637,6 @@ void VImage::vipssave( char * filename , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "filename", filename ) );
-}
-
-void VImage::ppmsave( char * filename , VOption *options )
-{
-    call( "ppmsave" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "filename", filename ) );
-}
-
-void VImage::radsave( char * filename , VOption *options )
-{
-    call( "radsave" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "filename", filename ) );
-}
-
-VipsBlob * VImage::radsave_buffer( VOption *options )
-{
-    VipsBlob * buffer;
-
-    call( "radsave_buffer" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "buffer", &buffer ) );
-
-    return( buffer );
 }
 
 void VImage::dzsave( char * filename , VOption *options )
@@ -1853,7 +1743,7 @@ VImage VImage::mapim( VImage index , VOption *options )
     return( out );
 }
 
-VImage VImage::shrink( double hshrink , double vshrink , VOption *options )
+VImage VImage::shrink( double xshrink , double yshrink , VOption *options )
 {
     VImage out;
 
@@ -1861,13 +1751,13 @@ VImage VImage::shrink( double hshrink , double vshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "hshrink", hshrink ) ->
-            set( "vshrink", vshrink ) );
+            set( "xshrink", xshrink ) ->
+            set( "yshrink", yshrink ) );
 
     return( out );
 }
 
-VImage VImage::shrinkh( int hshrink , VOption *options )
+VImage VImage::shrinkh( int xshrink , VOption *options )
 {
     VImage out;
 
@@ -1875,12 +1765,12 @@ VImage VImage::shrinkh( int hshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "hshrink", hshrink ) );
+            set( "xshrink", xshrink ) );
 
     return( out );
 }
 
-VImage VImage::shrinkv( int vshrink , VOption *options )
+VImage VImage::shrinkv( int yshrink , VOption *options )
 {
     VImage out;
 
@@ -1888,47 +1778,21 @@ VImage VImage::shrinkv( int vshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "vshrink", vshrink ) );
+            set( "yshrink", yshrink ) );
 
     return( out );
 }
 
-VImage VImage::reduceh( double hshrink , VOption *options )
+VImage VImage::shrink2( double xshrink , double yshrink , VOption *options )
 {
     VImage out;
 
-    call( "reduceh" ,
+    call( "shrink2" ,
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "hshrink", hshrink ) );
-
-    return( out );
-}
-
-VImage VImage::reducev( double vshrink , VOption *options )
-{
-    VImage out;
-
-    call( "reducev" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "out", &out ) ->
-            set( "vshrink", vshrink ) );
-
-    return( out );
-}
-
-VImage VImage::reduce( double hshrink , double vshrink , VOption *options )
-{
-    VImage out;
-
-    call( "reduce" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "out", &out ) ->
-            set( "hshrink", hshrink ) ->
-            set( "vshrink", vshrink ) );
+            set( "xshrink", xshrink ) ->
+            set( "yshrink", yshrink ) );
 
     return( out );
 }
@@ -2513,45 +2377,6 @@ VImage VImage::conv( VImage mask , VOption *options )
     return( out );
 }
 
-VImage VImage::conva( VImage mask , VOption *options )
-{
-    VImage out;
-
-    call( "conva" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "out", &out ) ->
-            set( "mask", mask ) );
-
-    return( out );
-}
-
-VImage VImage::convf( VImage mask , VOption *options )
-{
-    VImage out;
-
-    call( "convf" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "out", &out ) ->
-            set( "mask", mask ) );
-
-    return( out );
-}
-
-VImage VImage::convi( VImage mask , VOption *options )
-{
-    VImage out;
-
-    call( "convi" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "out", &out ) ->
-            set( "mask", mask ) );
-
-    return( out );
-}
-
 VImage VImage::compass( VImage mask , VOption *options )
 {
     VImage out;
@@ -2570,19 +2395,6 @@ VImage VImage::convsep( VImage mask , VOption *options )
     VImage out;
 
     call( "convsep" ,
-        (options ? options : VImage::option()) ->
-            set( "in", *this ) ->
-            set( "out", &out ) ->
-            set( "mask", mask ) );
-
-    return( out );
-}
-
-VImage VImage::convasep( VImage mask , VOption *options )
-{
-    VImage out;
-
-    call( "convasep" ,
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
