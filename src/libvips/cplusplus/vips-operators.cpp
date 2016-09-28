@@ -1837,7 +1837,7 @@ VImage VImage::shrinkh( int xshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "xshrink", xshrink ) );
+            set( "hshrink", xshrink ) );
 
     return( out );
 }
@@ -1863,7 +1863,7 @@ VImage VImage::reduceh( double xshrink , VOption *options )
         (options ? options : VImage::option()) ->
             set( "in", *this ) ->
             set( "out", &out ) ->
-            set( "xshrink", xshrink ) );
+            set( "hshrink", xshrink ) );
 
     return( out );
 }
