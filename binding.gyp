@@ -31,7 +31,7 @@
           'Release': {
             'msvs_settings': {
               'VCCLCompilerTool': {
-                'ExceptionHandling': 1
+                'ExceptionHandling': 0
               }
             },
             'msvs_disabled_warnings': [
@@ -203,7 +203,7 @@
       'Release': {
         'msvs_settings': {
           'VCCLCompilerTool': {
-            'ExceptionHandling': 1
+            'ExceptionHandling': 0
           }
         },
         'msvs_disabled_warnings': [
