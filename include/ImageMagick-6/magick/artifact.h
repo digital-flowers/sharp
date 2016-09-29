@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,18 +15,18 @@
 
   MagickCore artifact methods.
 */
-#ifndef _MAGICKCORE_ARTIFACT_H
-#define _MAGICKCORE_ARTIFACT_H
+#ifndef MAGICKCORE_ARTIFACT_H
+#define MAGICKCORE_ARTIFACT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport char
-  *GetNextImageArtifact(const Image *),
   *RemoveImageArtifact(Image *,const char *);
 
 extern MagickExport const char
+  *GetNextImageArtifact(const Image *),
   *GetImageArtifact(const Image *,const char *);
 
 extern MagickExport MagickBooleanType

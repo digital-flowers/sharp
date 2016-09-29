@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
   MagickCore Application Programming Interface declarations.
 */
 
-#ifndef _MAGICKCORE_CORE_H
-#define _MAGICKCORE_CORE_H
+#ifndef MAGICKCORE_CORE_H
+#define MAGICKCORE_CORE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-#if !defined(_MAGICKCORE_CONFIG_H)
-# define _MAGICKCORE_CONFIG_H
+#if !defined(MAGICKCORE_CONFIG_H)
+# define MAGICKCORE_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
-#  include "magick/magick-config.h"
+#  include "MagickCore/magick-config.h"
 # else
 #  include "magick-config.h"
 # endif
@@ -36,8 +36,12 @@ extern "C" {
 #if defined(_magickcore_inline) && !defined(inline)
 # define inline _magickcore_inline
 #endif
-#if defined(_magickcore_restrict) && !defined(restrict)
-# define restrict  _magickcore_restrict
+#if !defined(magick_restrict)
+# if !defined(_magickcore_restrict)
+#  define magick_restrict restrict
+# else
+#  define magick_restrict _magickcore_restrict
+# endif
 #endif
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
@@ -55,6 +59,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <math.h>
 #include <sys/types.h>
 #include <time.h>
 
@@ -64,98 +69,97 @@ extern "C" {
 #  define MAGICKCORE_POSIX_SUPPORT
 #endif 
 
-#include "magick/method-attribute.h"
+#include "MagickCore/method-attribute.h"
 
 #if defined(MAGICKCORE_NAMESPACE_PREFIX)
-# include "magick/methods.h"
+# include "MagickCore/methods.h"
 #endif
-#include "magick/magick-type.h"
-#include "magick/accelerate.h"
-#include "magick/animate.h"
-#include "magick/annotate.h"
-#include "magick/artifact.h"
-#include "magick/attribute.h"
-#include "magick/blob.h"
-#include "magick/cache.h"
-#include "magick/cache-view.h"
-#include "magick/channel.h"
-#include "magick/cipher.h"
-#include "magick/client.h"
-#include "magick/coder.h"
-#include "magick/color.h"
-#include "magick/colorspace.h"
-#include "magick/colormap.h"
-#include "magick/compare.h"
-#include "magick/composite.h"
-#include "magick/compress.h"
-#include "magick/configure.h"
-#include "magick/constitute.h"
-#include "magick/decorate.h"
-#include "magick/delegate.h"
-#include "magick/deprecate.h"
-#include "magick/display.h"
-#include "magick/distort.h"
-#include "magick/distribute-cache.h"
-#include "magick/draw.h"
-#include "magick/effect.h"
-#include "magick/enhance.h"
-#include "magick/exception.h"
-#include "magick/feature.h"
-#include "magick/fourier.h"
-#include "magick/fx.h"
-#include "magick/gem.h"
-#include "magick/geometry.h"
-#include "magick/hashmap.h"
-#include "magick/histogram.h"
-#include "magick/identify.h"
-#include "magick/image.h"
-#include "magick/image-view.h"
-#include "magick/layer.h"
-#include "magick/list.h"
-#include "magick/locale_.h"
-#include "magick/log.h"
-#include "magick/magic.h"
-#include "magick/magick.h"
-#include "magick/matrix.h"
-#include "magick/memory_.h"
-#include "magick/module.h"
-#include "magick/mime.h"
-#include "magick/monitor.h"
-#include "magick/montage.h"
-#include "magick/morphology.h"
-#include "magick/opencl.h"
-#include "magick/option.h"
-#include "magick/paint.h"
-#include "magick/pixel.h"
-#include "magick/pixel-accessor.h"
-#include "magick/policy.h"
-#include "magick/prepress.h"
-#include "magick/profile.h"
-#include "magick/property.h"
-#include "magick/quantize.h"
-#include "magick/quantum.h"
-#include "magick/registry.h"
-#include "magick/random_.h"
-#include "magick/resample.h"
-#include "magick/resize.h"
-#include "magick/resource_.h"
-#include "magick/segment.h"
-#include "magick/shear.h"
-#include "magick/signature.h"
-#include "magick/splay-tree.h"
-#include "magick/stream.h"
-#include "magick/statistic.h"
-#include "magick/string_.h"
-#include "magick/timer.h"
-#include "magick/token.h"
-#include "magick/transform.h"
-#include "magick/threshold.h"
-#include "magick/type.h"
-#include "magick/utility.h"
-#include "magick/version.h"
-#include "magick/vision.h"
-#include "magick/xml-tree.h"
-#include "magick/xwindow.h"
+#include "MagickCore/magick-type.h"
+#include "MagickCore/animate.h"
+#include "MagickCore/annotate.h"
+#include "MagickCore/artifact.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
+#include "MagickCore/cipher.h"
+#include "MagickCore/client.h"
+#include "MagickCore/coder.h"
+#include "MagickCore/color.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colormap.h"
+#include "MagickCore/compare.h"
+#include "MagickCore/composite.h"
+#include "MagickCore/compress.h"
+#include "MagickCore/configure.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/decorate.h"
+#include "MagickCore/delegate.h"
+#include "MagickCore/deprecate.h"
+#include "MagickCore/display.h"
+#include "MagickCore/distort.h"
+#include "MagickCore/distribute-cache.h"
+#include "MagickCore/draw.h"
+#include "MagickCore/effect.h"
+#include "MagickCore/enhance.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/feature.h"
+#include "MagickCore/fourier.h"
+#include "MagickCore/fx.h"
+#include "MagickCore/gem.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/histogram.h"
+#include "MagickCore/identify.h"
+#include "MagickCore/image.h"
+#include "MagickCore/image-view.h"
+#include "MagickCore/layer.h"
+#include "MagickCore/linked-list.h"
+#include "MagickCore/list.h"
+#include "MagickCore/locale_.h"
+#include "MagickCore/log.h"
+#include "MagickCore/magic.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/matrix.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/mime.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/montage.h"
+#include "MagickCore/morphology.h"
+#include "MagickCore/opencl.h"
+#include "MagickCore/option.h"
+#include "MagickCore/paint.h"
+#include "MagickCore/pixel.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
+#include "MagickCore/prepress.h"
+#include "MagickCore/profile.h"
+#include "MagickCore/property.h"
+#include "MagickCore/quantize.h"
+#include "MagickCore/quantum.h"
+#include "MagickCore/registry.h"
+#include "MagickCore/random_.h"
+#include "MagickCore/resample.h"
+#include "MagickCore/resize.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/segment.h"
+#include "MagickCore/shear.h"
+#include "MagickCore/signature.h"
+#include "MagickCore/splay-tree.h"
+#include "MagickCore/stream.h"
+#include "MagickCore/statistic.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/timer.h"
+#include "MagickCore/token.h"
+#include "MagickCore/transform.h"
+#include "MagickCore/threshold.h"
+#include "MagickCore/type.h"
+#include "MagickCore/utility.h"
+#include "MagickCore/version.h"
+#include "MagickCore/vision.h"
+#include "MagickCore/xml-tree.h"
+#include "MagickCore/xwindow.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

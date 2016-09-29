@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,12 +15,10 @@
 
   MagickCore string methods.
 */
-#ifndef _MAGICKCORE_STRING_H_
-#define _MAGICKCORE_STRING_H_
+#ifndef MAGICKCORE_STRING_H_
+#define MAGICKCORE_STRING_H_
 
-#include <stdarg.h>
-#include <time.h>
-#include "magick/exception.h"
+#include "MagickCore/exception.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -29,7 +27,7 @@ extern "C" {
 typedef struct _StringInfo
 {
   char
-    path[MaxTextExtent];
+    *path;
 
   unsigned char
     *datum;
@@ -48,6 +46,7 @@ extern MagickExport char
   *EscapeString(const char *,const char),
   *FileToString(const char *,const size_t,ExceptionInfo *),
   *GetEnvironmentValue(const char *),
+  *SanitizeString(const char *),
   *StringInfoToHexString(const StringInfo *),
   *StringInfoToString(const StringInfo *),
   **StringToArgv(const char *,int *),
@@ -58,18 +57,16 @@ extern MagickExport const char
   *GetStringInfoPath(const StringInfo *);
 
 extern MagickExport double
-  InterpretSiPrefixValue(const char *restrict,char **restrict),
-  *StringToArrayOfDoubles(const char *,ssize_t *, ExceptionInfo *);
+  InterpretSiPrefixValue(const char *magick_restrict,char **magick_restrict),
+  *StringToArrayOfDoubles(const char *,ssize_t *,ExceptionInfo *);
 
 extern MagickExport int
-  CompareStringInfo(const StringInfo *,const StringInfo *),
-  LocaleCompare(const char *,const char *),
-  LocaleNCompare(const char *,const char *,const size_t);
+  CompareStringInfo(const StringInfo *,const StringInfo *);
 
 extern MagickExport MagickBooleanType
   ConcatenateString(char **,const char *),
   IsStringTrue(const char *),
-  IsStringNotFalse(const char *),
+  IsStringFalse(const char *),
   SubstituteString(char **,const char *,const char *);
 
 extern MagickExport size_t
@@ -80,7 +77,8 @@ extern MagickExport size_t
   GetStringInfoLength(const StringInfo *);
 
 extern MagickExport ssize_t
-  FormatMagickSize(const MagickSizeType,const MagickBooleanType,char *),
+  FormatMagickSize(const MagickSizeType,const MagickBooleanType,const char *,
+    const size_t,char *),
   FormatMagickTime(const time_t,const size_t,char *);
 
 extern MagickExport StringInfo
@@ -99,8 +97,6 @@ extern MagickExport unsigned char
 extern MagickExport void
   ConcatenateStringInfo(StringInfo *,const StringInfo *)
     magick_attribute((__nonnull__)),
-  LocaleLower(char *),
-  LocaleUpper(char *),
   PrintStringInfo(FILE *file,const char *,const StringInfo *),
   ResetStringInfo(StringInfo *),
   SetStringInfo(StringInfo *,const StringInfo *),

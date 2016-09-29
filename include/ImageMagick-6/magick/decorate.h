@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
 
   MagickCore image decorate methods.
 */
-#ifndef _MAGICKCORE_DECORATE_H
-#define _MAGICKCORE_DECORATE_H
+#ifndef MAGICKCORE_DECORATE_H
+#define MAGICKCORE_DECORATE_H
+
+#include "MagickCore/image.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -36,11 +38,14 @@ typedef struct _FrameInfo
 } FrameInfo;
 
 extern MagickExport Image
-  *BorderImage(const Image *,const RectangleInfo *,ExceptionInfo *),
-  *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *);
+  *BorderImage(const Image *,const RectangleInfo *,const CompositeOperator,
+    ExceptionInfo *),
+  *FrameImage(const Image *,const FrameInfo *,const CompositeOperator,
+    ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  RaiseImage(Image *,const RectangleInfo *,const MagickBooleanType);
+  RaiseImage(Image *,const RectangleInfo *,const MagickBooleanType,
+    ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

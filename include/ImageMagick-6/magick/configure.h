@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore configure methods.
 */
-#ifndef _MAGICKCORE_CONFIGURE_H
-#define _MAGICKCORE_CONFIGURE_H
+#ifndef MAGICKCORE_CONFIGURE_H
+#define MAGICKCORE_CONFIGURE_H
 
-#include "magick/hashmap.h"
+#include "MagickCore/linked-list.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -35,10 +35,6 @@ typedef struct _ConfigureInfo
     exempt,
     stealth;
                                                                                 
-  struct _ConfigureInfo
-    *previous,
-    *next;  /* deprecated, use GetConfigureInfoList() */
-
   size_t
     signature;
 } ConfigureInfo;
@@ -60,11 +56,8 @@ extern MagickExport LinkedListInfo
   *GetConfigureOptions(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  ConfigureComponentGenesis(void),
   ListConfigureInfo(FILE *,ExceptionInfo *);
 
-extern MagickExport void
-  ConfigureComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

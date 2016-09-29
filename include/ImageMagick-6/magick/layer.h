@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
 
   MagickCore image layer methods.
 */
-#ifndef _MAGICKCORE_LAYER_H
-#define _MAGICKCORE_LAYER_H
+#ifndef MAGICKCORE_LAYER_H
+#define MAGICKCORE_LAYER_H
+
+#include "MagickCore/composite.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -50,14 +52,13 @@ typedef enum
   FlattenLayer,
   MosaicLayer,
   TrimBoundsLayer
-} ImageLayerMethod;
+} LayerMethod;
 
 extern MagickExport Image
   *CoalesceImages(const Image *,ExceptionInfo *),
   *DisposeImages(const Image *,ExceptionInfo *),
-  *CompareImageLayers(const Image *,const ImageLayerMethod,ExceptionInfo *),
-  *DeconstructImages(const Image *,ExceptionInfo *),
-  *MergeImageLayers(Image *,const ImageLayerMethod,ExceptionInfo *),
+  *CompareImagesLayers(const Image *,const LayerMethod,ExceptionInfo *),
+  *MergeImageLayers(Image *,const LayerMethod,ExceptionInfo *),
   *OptimizeImageLayers(const Image *,ExceptionInfo *),
   *OptimizePlusImageLayers(const Image *,ExceptionInfo *);
 

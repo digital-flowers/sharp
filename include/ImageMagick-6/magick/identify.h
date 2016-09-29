@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickCore image identify method.
 */
-#ifndef _MAGICKCORE_IDENTIFY_H
-#define _MAGICKCORE_IDENTIFY_H
+#ifndef MAGICKCORE_IDENTIFY_H
+#define MAGICKCORE_IDENTIFY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  IdentifyImage(Image *,FILE *,const MagickBooleanType);
+  IdentifyImage(Image *,FILE *,const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

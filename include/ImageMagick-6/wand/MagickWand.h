@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
   MagickWand Application Programming Interface declarations.
 */
 
-#ifndef _MAGICK_WAND_H
-#define _MAGICK_WAND_H
+#ifndef MAGICKWAND_MAGICKWAND_H
+#define MAGICKWAND_MAGICKWAND_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-#if !defined(_MAGICKWAND_CONFIG_H)
-# define _MAGICKWAND_CONFIG_H
+#if !defined(MAGICKWAND_CONFIG_H)
+# define MAGICKWAND_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
-#  include "magick/magick-config.h"
+#  include "MagickCore/magick-config.h"
 # else
 #  include "magick-config.h"
 # endif
@@ -36,8 +36,12 @@ extern "C" {
 #if defined(_magickcore_inline) && !defined(inline)
 # define inline _magickcore_inline
 #endif
-#if defined(_magickcore_restrict) && !defined(restrict)
-# define restrict  _magickcore_restrict
+#if !defined(magick_restrict)
+# if !defined(_magickcore_restrict)
+#  define magick_restrict restrict
+# else
+#  define magick_restrict _magickcore_restrict
+# endif
 #endif
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
@@ -68,26 +72,29 @@ extern "C" {
 typedef struct _MagickWand
   MagickWand;
 
-#include "wand/method-attribute.h"
-#include "magick/MagickCore.h"
-#include "wand/animate.h"
-#include "wand/compare.h"
-#include "wand/composite.h"
-#include "wand/conjure.h"
-#include "wand/convert.h"
-#include "wand/deprecate.h"
-#include "wand/display.h"
-#include "wand/drawing-wand.h"
-#include "wand/identify.h"
-#include "wand/import.h"
-#include "wand/magick-property.h"
-#include "wand/magick-image.h"
-#include "wand/mogrify.h"
-#include "wand/montage.h"
-#include "wand/pixel-iterator.h"
-#include "wand/pixel-wand.h"
-#include "wand/stream.h"
-#include "wand/wand-view.h"
+#include "MagickWand/method-attribute.h"
+#include "MagickCore/MagickCore.h"
+#include "MagickWand/animate.h"
+#include "MagickWand/compare.h"
+#include "MagickWand/composite.h"
+#include "MagickWand/conjure.h"
+#include "MagickWand/convert.h"
+#include "MagickWand/deprecate.h"
+#include "MagickWand/display.h"
+#include "MagickWand/drawing-wand.h"
+#include "MagickWand/identify.h"
+#include "MagickWand/import.h"
+#include "MagickWand/wandcli.h"
+#include "MagickWand/operation.h"
+#include "MagickWand/magick-cli.h"
+#include "MagickWand/magick-property.h"
+#include "MagickWand/magick-image.h"
+#include "MagickWand/mogrify.h"
+#include "MagickWand/montage.h"
+#include "MagickWand/pixel-iterator.h"
+#include "MagickWand/pixel-wand.h"
+#include "MagickWand/stream.h"
+#include "MagickWand/wand-view.h"
 
 extern WandExport char
   *MagickGetException(const MagickWand *,ExceptionType *);

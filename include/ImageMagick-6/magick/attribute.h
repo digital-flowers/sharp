@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,32 +15,33 @@
 
   MagickCore methods to set or get image attributes.
 */
-#ifndef _MAGICKCORE_ATTRIBUTE_H
-#define _MAGICKCORE_ATTRIBUTE_H
+#ifndef MAGICKCORE_ATTRIBUTE_H
+#define MAGICKCORE_ATTRIBUTE_H
 
-#include "magick/image.h"
-#include "magick/exception.h"
+#include "MagickCore/image.h"
+#include "MagickCore/exception.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport ImageType
-  GetImageType(const Image *,ExceptionInfo *);
+  GetImageType(const Image *),
+  IdentifyImageGray(const Image *,ExceptionInfo *),
+  IdentifyImageType(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  IsGrayImage(const Image *,ExceptionInfo *),
-  IsMonochromeImage(const Image *,ExceptionInfo *),
-  IsOpaqueImage(const Image *,ExceptionInfo *),
-  SetImageChannelDepth(Image *,const ChannelType,const size_t),
-  SetImageDepth(Image *,const size_t),
-  SetImageType(Image *,const ImageType);
+  IdentifyImageMonochrome(const Image *,ExceptionInfo *),
+  IsImageGray(const Image *),
+  IsImageMonochrome(const Image *),
+  IsImageOpaque(const Image *,ExceptionInfo *),
+  SetImageDepth(Image *,const size_t,ExceptionInfo *),
+  SetImageType(Image *,const ImageType,ExceptionInfo *);
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport size_t
-  GetImageChannelDepth(const Image *,const ChannelType,ExceptionInfo *),
   GetImageDepth(const Image *,ExceptionInfo *),
   GetImageQuantumDepth(const Image *,const MagickBooleanType);
 

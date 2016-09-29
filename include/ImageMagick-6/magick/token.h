@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore token methods.
 */
-#ifndef _MAGICKCORE_TOKEN_H
-#define _MAGICKCORE_TOKEN_H
+#ifndef MAGICKCORE_TOKEN_H
+#define MAGICKCORE_TOKEN_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -33,16 +33,14 @@ extern MagickExport int
     const char *,const char *,const char *,const char,char *,int *,char *);
 
 extern MagickExport MagickBooleanType
-  GlobExpression(const char *,const char *,const MagickBooleanType),
-  IsGlob(const char *),
-  IsMagickTrue(const char *);
+  GlobExpression(const char *,const char *,const MagickBooleanType);
 
 extern MagickExport TokenInfo
   *AcquireTokenInfo(void),
   *DestroyTokenInfo(TokenInfo *);
 
 extern MagickExport void
-  GetMagickToken(const char *,const char **,char *);
+  GetNextToken(const char *,const char **,const size_t,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

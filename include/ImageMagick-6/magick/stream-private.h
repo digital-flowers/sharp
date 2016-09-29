@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -13,12 +13,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickWand API (deprecated, use magick-wand.h instead).
+  MagickCore image stream private methods.
 */
+#ifndef MAGICKCORE_STREAM_PRIVATE_H
+#define MAGICKCORE_STREAM_PRIVATE_H
 
-#ifndef _MAGICKWAND_MAGICK_WAND_DEPRECATED_H
-#define _MAGICKWAND_MAGICK_WAND_DEPRECATED_H
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
-#include "wand/MagickWand.h"
+extern MagickPrivate const void
+  *GetStreamInfoClientData(StreamInfo *);
+
+extern MagickPrivate void
+  SetStreamInfoClientData(StreamInfo *,const void *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 #endif

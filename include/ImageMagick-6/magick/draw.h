@@ -1,12 +1,12 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-  
+
     http://www.imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +15,13 @@
 
   MagickCore drawing methods.
 */
-#ifndef _MAGICKCORE_DRAW_H
-#define _MAGICKCORE_DRAW_H
+#ifndef MAGICKCORE_DRAW_H
+#define MAGICKCORE_DRAW_H
 
-#include "magick/geometry.h"
-#include "magick/image.h"
-#include "magick/pixel.h"
-#include "magick/type.h"
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
+#include "MagickCore/pixel.h"
+#include "MagickCore/type.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -103,21 +103,21 @@ typedef enum
 typedef enum
 {
   UndefinedPrimitive,
-  PointPrimitive,
+  AlphaPrimitive,
+  ArcPrimitive,
+  BezierPrimitive,
+  CirclePrimitive,
+  ColorPrimitive,
+  EllipsePrimitive,
+  ImagePrimitive,
   LinePrimitive,
+  PathPrimitive,
+  PointPrimitive,
+  PolygonPrimitive,
+  PolylinePrimitive,
   RectanglePrimitive,
   RoundRectanglePrimitive,
-  ArcPrimitive,
-  EllipsePrimitive,
-  CirclePrimitive,
-  PolylinePrimitive,
-  PolygonPrimitive,
-  BezierPrimitive,
-  ColorPrimitive,
-  MattePrimitive,
-  TextPrimitive,
-  ImagePrimitive,
-  PathPrimitive
+  TextPrimitive
 } PrimitiveType;
 
 typedef enum
@@ -134,19 +134,12 @@ typedef enum
   RepeatSpread
 } SpreadMethod;
 
-typedef struct _PointInfo
-{ 
-  double
-    x,
-    y;
-} PointInfo;
-
 typedef struct _StopInfo
 {
-  MagickPixelPacket
+  PixelInfo
     color;
 
-  MagickRealType
+  double
     offset;
 } StopInfo;
 
@@ -173,14 +166,16 @@ typedef struct _GradientInfo
   MagickBooleanType
     debug;
 
+  PointInfo
+    center,
+    radii;
+
+  double
+    radius,
+    angle;
+
   size_t
     signature;
-
-  PointInfo
-    center;
-
-  MagickRealType
-    radius;
 } GradientInfo;
 
 typedef struct _ElementReference
@@ -194,12 +189,12 @@ typedef struct _ElementReference
   GradientInfo
     gradient;
 
-  size_t
-    signature;
-
   struct _ElementReference
     *previous,
     *next;
+
+  size_t
+    signature;
 } ElementReference;
 
 typedef struct _DrawInfo
@@ -214,23 +209,21 @@ typedef struct _DrawInfo
   AffineMatrix
     affine;
 
-  GravityType
-    gravity;
-
-  PixelPacket
+  PixelInfo
     fill,
-    stroke;
+    stroke,
+    undercolor,
+    border_color;
+
+  Image
+    *fill_pattern,
+    *stroke_pattern;
 
   double
     stroke_width;
 
   GradientInfo
     gradient;
-
-  Image
-    *fill_pattern,
-    *tile,
-    *stroke_pattern;
 
   MagickBooleanType
     stroke_antialias,
@@ -258,15 +251,13 @@ typedef struct _DrawInfo
     compose;
 
   char
-    *text;
-
-  size_t
-    face;
-
-  char
+    *text,
     *font,
     *metrics,
     *family;
+
+  size_t
+    face;
 
   StyleType
     style;
@@ -289,9 +280,8 @@ typedef struct _DrawInfo
   AlignType
     align;
 
-  PixelPacket
-    undercolor,
-    border_color;
+  GravityType
+    gravity;
 
   char
     *server_name;
@@ -309,19 +299,13 @@ typedef struct _DrawInfo
     clip_units;
 
   Quantum
-    opacity;
+    alpha;
 
   MagickBooleanType
     render;
 
   ElementReference
     element_reference;
-
-  MagickBooleanType
-    debug;
-
-  size_t
-    signature;
 
   double
     kerning,
@@ -330,7 +314,18 @@ typedef struct _DrawInfo
 
   DirectionType
     direction;
+
+  MagickBooleanType
+    debug;
+
+  size_t
+    signature;
+
+  double
+    fill_alpha,
+    stroke_alpha;
 } DrawInfo;
+
 
 typedef struct _PrimitiveInfo
 {
@@ -377,12 +372,13 @@ extern MagickExport DrawInfo
   *DestroyDrawInfo(DrawInfo *);
 
 extern MagickExport MagickBooleanType
-  DrawAffineImage(Image *,const Image *,const AffineMatrix *),
-  DrawClipPath(Image *,const DrawInfo *,const char *),
-  DrawGradientImage(Image *,const DrawInfo *),
-  DrawImage(Image *,const DrawInfo *),
-  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
-  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *);
+  DrawAffineImage(Image *,const Image *,const AffineMatrix *,ExceptionInfo *),
+  DrawClipPath(Image *,const DrawInfo *,const char *,ExceptionInfo *),
+  DrawGradientImage(Image *,const DrawInfo *,ExceptionInfo *),
+  DrawImage(Image *,const DrawInfo *,ExceptionInfo *),
+  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **,
+    ExceptionInfo *),
+  DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *,ExceptionInfo *);
 
 extern MagickExport void
   GetAffineMatrix(AffineMatrix *),

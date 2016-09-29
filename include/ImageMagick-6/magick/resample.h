@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore graphic resample methods.
 */
-#ifndef _MAGICKCORE_RESAMPLE_H
-#define _MAGICKCORE_RESAMPLE_H
+#ifndef MAGICKCORE_RESAMPLE_H
+#define MAGICKCORE_RESAMPLE_H
 
-#include "magick/cache-view.h"
+#include "MagickCore/cache-view.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -36,7 +36,7 @@ typedef enum
   BoxFilter,
   TriangleFilter,
   HermiteFilter,
-  HanningFilter,
+  HannFilter,
   HammingFilter,
   BlackmanFilter,
   GaussianFilter,
@@ -48,7 +48,7 @@ typedef enum
   SincFilter,
   SincFastFilter,
   KaiserFilter,
-  WelshFilter,
+  WelchFilter,
   ParzenFilter,
   BohmanFilter,
   BartlettFilter,
@@ -63,23 +63,27 @@ typedef enum
   SplineFilter,
   LanczosRadiusFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
-} FilterTypes;
+} FilterType;
 
 /*
   Backward compatibility for the more correctly named Jinc Filter.  Original
   source of this filter is from "zoom" but it refers to a reference by Pratt,
   who does not actualy name the filter.
+
+  also miss-spellings of common filters
 */
-#define BesselFilter JincFilter
+#define BesselFilter  JincFilter
+#define WelshFilter   WelchFilter
+#define HanningFilter HannFilter
 
 typedef struct _ResampleFilter
   ResampleFilter;
 
 extern MagickExport MagickBooleanType
   ResamplePixelColor(ResampleFilter *,const double,const double,
-    MagickPixelPacket *),
+    PixelInfo *,ExceptionInfo *),
   SetResampleFilterInterpolateMethod(ResampleFilter *,
-    const InterpolatePixelMethod),
+    const PixelInterpolateMethod),
   SetResampleFilterVirtualPixelMethod(ResampleFilter *,
     const VirtualPixelMethod);
 
@@ -90,7 +94,7 @@ extern MagickExport ResampleFilter
 extern MagickExport void
   ScaleResampleFilter(ResampleFilter *,const double,const double,const double,
     const double),
-  SetResampleFilter(ResampleFilter *,const FilterTypes,const double);
+  SetResampleFilter(ResampleFilter *,const FilterType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

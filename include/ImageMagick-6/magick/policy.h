@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
 
   MagickCore image color methods.
 */
-#ifndef _MAGICKCORE_POLICY_H
-#define _MAGICKCORE_POLICY_H
+#ifndef MAGICKCORE_POLICY_H
+#define MAGICKCORE_POLICY_H
 
-#include "magick/pixel.h"
-#include "magick/exception.h"
+#include "MagickCore/pixel.h"
+#include "MagickCore/exception.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -33,7 +33,8 @@ typedef enum
   FilterPolicyDomain,
   PathPolicyDomain,
   ResourcePolicyDomain,
-  SystemPolicyDomain
+  SystemPolicyDomain,
+  CachePolicyDomain
 } PolicyDomain;
 
 typedef enum
@@ -57,11 +58,7 @@ extern MagickExport const PolicyInfo
 
 extern MagickExport MagickBooleanType
   IsRightsAuthorized(const PolicyDomain,const PolicyRights,const char *),
-  ListPolicyInfo(FILE *,ExceptionInfo *),
-  PolicyComponentGenesis(void);
-
-extern MagickExport void
-  PolicyComponentTerminus(void);
+  ListPolicyInfo(FILE *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

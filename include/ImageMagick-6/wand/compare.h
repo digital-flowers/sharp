@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickWand compare command-line method.
 */
-#ifndef _MAGICKWAND_COMPARE_H
-#define _MAGICKWAND_COMPARE_H
+#ifndef MAGICKWAND_COMPARE_H
+#define MAGICKWAND_COMPARE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern WandExport MagickBooleanType
-  CompareImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);
+  CompareImagesCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

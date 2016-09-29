@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore magic methods.
 */
-#ifndef _MAGICKCORE_MAGIC_H
-#define _MAGICKCORE_MAGIC_H
+#ifndef MAGICKCORE_MAGIC_H
+#define MAGICKCORE_MAGIC_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -42,10 +42,6 @@ typedef struct _MagicInfo
     exempt,
     stealth;
 
-  struct _MagicInfo
-    *previous,
-    *next;  /* deprecated, use GetMagicInfoList() */
-
   size_t
     signature;
 } MagicInfo;
@@ -57,15 +53,14 @@ extern MagickExport const char
   *GetMagicName(const MagicInfo *);
 
 extern MagickExport MagickBooleanType
-  ListMagicInfo(FILE *,ExceptionInfo *),
-  MagicComponentGenesis(void);
+  ListMagicInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport const MagicInfo
   *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *),
   **GetMagicInfoList(const char *,size_t *,ExceptionInfo *);
 
-extern MagickExport void
-  MagicComponentTerminus(void);
+extern MagickExport size_t
+  GetMagicPatternExtent(ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

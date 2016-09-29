@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore discrete Fourier transform (DFT) methods.
 */
-#ifndef _MAGICKCORE_FFT_H
-#define _MAGICKCORE_FFT_H
+#ifndef MAGICKCORE_FFT_H
+#define MAGICKCORE_FFT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -35,11 +35,11 @@ typedef enum
 } ComplexOperator;
 
 extern MagickExport Image
-  *ComplexImages(const Image *,const ComplexOperator,ExceptionInfo *),
-  *ForwardFourierTransformImage(const Image *,const MagickBooleanType,
-    ExceptionInfo *),
-  *InverseFourierTransformImage(const Image *,const Image *,
-    const MagickBooleanType,ExceptionInfo *);
+ *ComplexImages(const Image *,const ComplexOperator,ExceptionInfo *),
+ *ForwardFourierTransformImage(const Image *,const MagickBooleanType,
+   ExceptionInfo *),
+ *InverseFourierTransformImage(const Image *,const Image *,
+   const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

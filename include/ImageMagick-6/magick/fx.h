@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore image f/x methods.
 */
-#ifndef _MAGICKCORE_FX_H
-#define _MAGICKCORE_FX_H
+#ifndef MAGICKCORE_FX_H
+#define MAGICKCORE_FX_H
 
-#include "magick/draw.h"
+#include "MagickCore/draw.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -37,18 +37,17 @@ typedef enum
 } NoiseType;
 
 extern MagickExport Image
-  *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
-  *AddNoiseImageChannel(const Image *,const ChannelType,const NoiseType,
-    ExceptionInfo *),
+  *AddNoiseImage(const Image *,const NoiseType,const double,ExceptionInfo *),
   *BlueShiftImage(const Image *,const double,ExceptionInfo *),
   *CharcoalImage(const Image *,const double,const double,ExceptionInfo *),
-  *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
+  *ColorizeImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
   *ColorMatrixImage(const Image *,const KernelInfo *kernel,ExceptionInfo *),
   *FxImage(const Image *,const char *,ExceptionInfo *),
-  *FxImageChannel(const Image *,const ChannelType,const char *,ExceptionInfo *),
-  *ImplodeImage(const Image *,const double,ExceptionInfo *),
+  *ImplodeImage(const Image *,const double,const PixelInterpolateMethod,
+    ExceptionInfo *),
   *MorphImages(const Image *,const size_t,ExceptionInfo *),
-  *PolaroidImage(const Image *,const DrawInfo *,const double,ExceptionInfo *),
+  *PolaroidImage(const Image *,const DrawInfo *,const char *,const double,
+    const PixelInterpolateMethod,ExceptionInfo *),
   *SepiaToneImage(const Image *,const double,ExceptionInfo *),
   *ShadowImage(const Image *,const double,const double,const ssize_t,
     const ssize_t,ExceptionInfo *),
@@ -58,16 +57,18 @@ extern MagickExport Image
   *StereoImage(const Image *,const Image *,ExceptionInfo *),
   *StereoAnaglyphImage(const Image *,const Image *,const ssize_t,const ssize_t,
      ExceptionInfo *),
-  *SwirlImage(const Image *,double,ExceptionInfo *),
-  *TintImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
+  *SwirlImage(const Image *,double,const PixelInterpolateMethod,
+    ExceptionInfo *),
+  *TintImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
   *VignetteImage(const Image *,const double,const double,const ssize_t,
     const ssize_t,ExceptionInfo *),
-  *WaveImage(const Image *,const double,const double,ExceptionInfo *);
+  *WaveImage(const Image *,const double,const double,
+    const PixelInterpolateMethod,ExceptionInfo *),
+  *WaveletDenoiseImage(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  PlasmaImage(Image *,const SegmentInfo *,size_t,size_t),
-  SolarizeImage(Image *,const double),
-  SolarizeImageChannel(Image *,const ChannelType,const double,ExceptionInfo *);
+  PlasmaImage(Image *,const SegmentInfo *,size_t,size_t,ExceptionInfo *),
+  SolarizeImage(Image *,const double,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

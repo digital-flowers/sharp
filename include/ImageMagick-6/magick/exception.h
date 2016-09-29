@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
 
   MagickCore exception methods.
 */
-#ifndef _MAGICKCORE_EXCEPTION_H
-#define _MAGICKCORE_EXCEPTION_H
+#ifndef MAGICKCORE_EXCEPTION_H
+#define MAGICKCORE_EXCEPTION_H
 
-#include <stdarg.h>
-#include "magick/semaphore.h"
+#include "MagickCore/semaphore.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -153,12 +152,11 @@ extern MagickExport FatalErrorHandler
 extern MagickExport MagickBooleanType
   ThrowException(ExceptionInfo *,const ExceptionType,const char *,
     const char *),
+  ThrowMagickExceptionList(ExceptionInfo *,const char *,const char *,
+    const size_t,const ExceptionType,const char *,const char *,va_list),
   ThrowMagickException(ExceptionInfo *,const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...)
-    magick_attribute((__format__ (__printf__,7,8))),
-  ThrowMagickExceptionList(ExceptionInfo *,const char *,const char *,
-    const size_t,const ExceptionType,const char *,const char *,va_list)
-    magick_attribute((__format__ (__printf__,7,0)));
+    magick_attribute((__format__ (__printf__,7,8)));
 
 extern MagickExport void
   CatchException(ExceptionInfo *),

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
 
   Pixel Iterator Methods.
 */
-#ifndef _MAGICKWAND_PIXEL_ITERATOR_H
-#define _MAGICKWAND_PIXEL_ITERATOR_H
+#ifndef MAGICKWAND_PIXEL_ITERATOR_H
+#define MAGICKWAND_PIXEL_ITERATOR_H
 
-#include "wand/magick-wand.h"
-#include "wand/pixel-wand.h"
+#include "MagickWand/MagickWand.h"
+#include "MagickWand/pixel-wand.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

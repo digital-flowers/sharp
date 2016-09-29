@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image colorspace methods.
 */
-#ifndef _MAGICKCORE_COLORSPACE_H
-#define _MAGICKCORE_COLORSPACE_H
+#ifndef MAGICKCORE_COLORSPACE_H
+#define MAGICKCORE_COLORSPACE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -25,47 +25,45 @@ extern "C" {
 typedef enum
 {
   UndefinedColorspace,
-  RGBColorspace,            /* Linear RGB colorspace */
-  GRAYColorspace,           /* greyscale (linear) image (faked 1 channel) */
-  TransparentColorspace,
-  OHTAColorspace,
+  CMYColorspace,           /* negated linear RGB colorspace */
+  CMYKColorspace,          /* CMY with Black separation */
+  GRAYColorspace,          /* Single Channel greyscale (linear) image */
+  HCLColorspace,
+  HCLpColorspace,
+  HSBColorspace,
+  HSIColorspace,
+  HSLColorspace,
+  HSVColorspace,           /* alias for HSB */
+  HWBColorspace,
   LabColorspace,
-  XYZColorspace,
+  LCHColorspace,           /* alias for LCHuv */
+  LCHabColorspace,         /* Cylindrical (Polar) Lab */
+  LCHuvColorspace,         /* Cylindrical (Polar) Luv */
+  LogColorspace,
+  LMSColorspace,
+  LuvColorspace,
+  OHTAColorspace,
+  Rec601YCbCrColorspace,
+  Rec709YCbCrColorspace,
+  RGBColorspace,           /* Linear RGB colorspace */
+  scRGBColorspace,         /* ??? */
+  sRGBColorspace,          /* Default: non-linear sRGB colorspace */
+  TransparentColorspace,
+  xyYColorspace,
+  XYZColorspace,           /* IEEE Color Reference colorspace */
   YCbCrColorspace,
   YCCColorspace,
+  YDbDrColorspace,
   YIQColorspace,
   YPbPrColorspace,
-  YUVColorspace,
-  CMYKColorspace,           /* negated linear RGB with black separated */
-  sRGBColorspace,           /* Default: non-linear sRGB colorspace */
-  HSBColorspace,
-  HSLColorspace,
-  HWBColorspace,
-  Rec601LumaColorspace,
-  Rec601YCbCrColorspace,
-  Rec709LumaColorspace,
-  Rec709YCbCrColorspace,
-  LogColorspace,
-  CMYColorspace,            /* negated linear RGB colorspace */
-  LuvColorspace,
-  HCLColorspace,
-  LCHColorspace,            /* alias for LCHuv */
-  LMSColorspace,
-  LCHabColorspace,          /* Cylindrical (Polar) Lab */
-  LCHuvColorspace,          /* Cylindrical (Polar) Luv */
-  scRGBColorspace,
-  HSIColorspace,
-  HSVColorspace,            /* alias for HSB */
-  HCLpColorspace,
-  YDbDrColorspace,
-  xyYColorspace
+  YUVColorspace
 } ColorspaceType;
 
 extern MagickExport MagickBooleanType
-  RGBTransformImage(Image *,const ColorspaceType),
-  SetImageColorspace(Image *,const ColorspaceType),
-  TransformImageColorspace(Image *,const ColorspaceType),
-  TransformRGBImage(Image *,const ColorspaceType);
+  SetImageColorspace(Image *,const ColorspaceType,ExceptionInfo *),
+  SetImageGray(Image *,ExceptionInfo *),
+  SetImageMonochrome(Image *,ExceptionInfo *),
+  TransformImageColorspace(Image *,const ColorspaceType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

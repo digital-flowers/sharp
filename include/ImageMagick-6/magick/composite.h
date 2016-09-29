@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image composite methods.
 */
-#ifndef _MAGICKCORE_COMPOSITE_H
-#define _MAGICKCORE_COMPOSITE_H
+#ifndef MAGICKCORE_COMPOSITE_H
+#define MAGICKCORE_COMPOSITE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -25,10 +25,10 @@ extern "C" {
 typedef enum
 {
   UndefinedCompositeOp,
-  NoCompositeOp,
-  ModulusAddCompositeOp,
+  AlphaCompositeOp,
   AtopCompositeOp,
   BlendCompositeOp,
+  BlurCompositeOp,
   BumpmapCompositeOp,
   ChangeMaskCompositeOp,
   ClearCompositeOp,
@@ -41,31 +41,47 @@ typedef enum
   CopyCyanCompositeOp,
   CopyGreenCompositeOp,
   CopyMagentaCompositeOp,
-  CopyOpacityCompositeOp,
+  CopyAlphaCompositeOp,
   CopyRedCompositeOp,
   CopyYellowCompositeOp,
   DarkenCompositeOp,
+  DarkenIntensityCompositeOp,
+  DifferenceCompositeOp,
+  DisplaceCompositeOp,
+  DissolveCompositeOp,
+  DistortCompositeOp,
+  DivideDstCompositeOp,
+  DivideSrcCompositeOp,
   DstAtopCompositeOp,
   DstCompositeOp,
   DstInCompositeOp,
   DstOutCompositeOp,
   DstOverCompositeOp,
-  DifferenceCompositeOp,
-  DisplaceCompositeOp,
-  DissolveCompositeOp,
   ExclusionCompositeOp,
   HardLightCompositeOp,
+  HardMixCompositeOp,
   HueCompositeOp,
   InCompositeOp,
+  IntensityCompositeOp,
   LightenCompositeOp,
+  LightenIntensityCompositeOp,
+  LinearBurnCompositeOp,
+  LinearDodgeCompositeOp,
   LinearLightCompositeOp,
   LuminizeCompositeOp,
+  MathematicsCompositeOp,
   MinusDstCompositeOp,
+  MinusSrcCompositeOp,
   ModulateCompositeOp,
+  ModulusAddCompositeOp,
+  ModulusSubtractCompositeOp,
   MultiplyCompositeOp,
+  NoCompositeOp,
   OutCompositeOp,
   OverCompositeOp,
   OverlayCompositeOp,
+  PegtopLightCompositeOp,
+  PinLightCompositeOp,
   PlusCompositeOp,
   ReplaceCompositeOp,
   SaturateCompositeOp,
@@ -76,43 +92,15 @@ typedef enum
   SrcInCompositeOp,
   SrcOutCompositeOp,
   SrcOverCompositeOp,
-  ModulusSubtractCompositeOp,
   ThresholdCompositeOp,
-  XorCompositeOp,
-  /* These are new operators, added after the above was last sorted.
-   * The list should be re-sorted only when a new library version is
-   * created.
-   */
-  DivideDstCompositeOp,
-  DistortCompositeOp,
-  BlurCompositeOp,
-  PegtopLightCompositeOp,
   VividLightCompositeOp,
-  PinLightCompositeOp,
-  LinearDodgeCompositeOp,
-  LinearBurnCompositeOp,
-  MathematicsCompositeOp,
-  DivideSrcCompositeOp,
-  MinusSrcCompositeOp,
-  DarkenIntensityCompositeOp,
-  LightenIntensityCompositeOp,
-  HardMixCompositeOp
+  XorCompositeOp
 } CompositeOperator;
 
-/* Deprecated (renamed) Method Names for backward compatibility
- * However the CompositeOp value has not changed, just renamed.
- */
-#define AddCompositeOp       ModulusAddCompositeOp
-#define SubtractCompositeOp  ModulusSubtractCompositeOp
-#define MinusCompositeOp     MinusDstCompositeOp
-#define DivideCompositeOp    DivideDstCompositeOp
-
 extern MagickExport MagickBooleanType
-  CompositeImage(Image *,const CompositeOperator,const Image *,const ssize_t,
-    const ssize_t),
-  CompositeImageChannel(Image *,const ChannelType,const CompositeOperator,
-    const Image *,const ssize_t,const ssize_t),
-  TextureImage(Image *,const Image *);
+  CompositeImage(Image *,const Image *,const CompositeOperator,
+    const MagickBooleanType,const ssize_t,const ssize_t,ExceptionInfo *),
+  TextureImage(Image *,const Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

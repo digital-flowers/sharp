@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image resize methods.
 */
-#ifndef _MAGICKCORE_RESIZE_H
-#define _MAGICKCORE_RESIZE_H
+#ifndef MAGICKCORE_RESIZE_H
+#define MAGICKCORE_RESIZE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -28,15 +28,15 @@ typedef struct _ResizeFilter
 extern MagickExport Image
   *AdaptiveResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *InterpolativeResizeImage(const Image *,const size_t,const size_t,
-    const InterpolatePixelMethod,ExceptionInfo *),
+    const PixelInterpolateMethod,ExceptionInfo *),
   *LiquidRescaleImage(const Image *,const size_t,const size_t,const double,
     const double,ExceptionInfo *),
   *MagnifyImage(const Image *,ExceptionInfo *),
   *MinifyImage(const Image *,ExceptionInfo *),
-  *ResampleImage(const Image *,const double,const double,const FilterTypes,
-    const double,ExceptionInfo *),
-  *ResizeImage(const Image *,const size_t,const size_t,const FilterTypes,
-    const double,ExceptionInfo *),
+  *ResampleImage(const Image *,const double,const double,const FilterType,
+    ExceptionInfo *),
+  *ResizeImage(const Image *,const size_t,const size_t,const FilterType,
+    ExceptionInfo *),
   *SampleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ScaleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ThumbnailImage(const Image *,const size_t,const size_t,ExceptionInfo *);

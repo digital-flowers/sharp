@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore feature methods.
 */
-#ifndef _MAGICKCORE_FEATURE_H
-#define _MAGICKCORE_FEATURE_H
+#ifndef MAGICKCORE_FEATURE_H
+#define MAGICKCORE_FEATURE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -45,7 +45,7 @@ typedef struct _ChannelFeatures
 } ChannelFeatures;
 
 extern MagickExport ChannelFeatures
-  *GetImageChannelFeatures(const Image *,const size_t,ExceptionInfo *);
+  *GetImageFeatures(const Image *,const size_t,ExceptionInfo *);
 
 extern MagickExport Image
   *CannyEdgeImage(const Image *,const double,const double,const double,

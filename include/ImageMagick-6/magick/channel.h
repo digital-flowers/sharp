@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
 
   MagickCore image channel methods.
 */
-#ifndef _MAGICKCORE_CHANNEL_H
-#define _MAGICKCORE_CHANNEL_H
+#ifndef MAGICKCORE_CHANNEL_H
+#define MAGICKCORE_CHANNEL_H
 
-#include "magick/image.h"
+#include <MagickCore/image.h>
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport Image
-  *CombineImages(const Image *,const ChannelType,ExceptionInfo *),
+  *ChannelFxImage(const Image *,const char *,ExceptionInfo *),
+  *CombineImages(const Image *,const ColorspaceType,ExceptionInfo *),
   *SeparateImage(const Image *,const ChannelType,ExceptionInfo *),
-  *SeparateImages(const Image *,const ChannelType,ExceptionInfo *);
+  *SeparateImages(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageAlphaChannel(const Image *),
-  SeparateImageChannel(Image *,const ChannelType),
-  SetImageAlphaChannel(Image *,const AlphaChannelType);
+  SetImageAlphaChannel(Image *,const AlphaChannelOption,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

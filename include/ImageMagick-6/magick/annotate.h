@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,27 +15,24 @@
 
   MagickCore image annotation methods.
 */
-#ifndef _MAGICKCORE_ANNOTATE_H
-#define _MAGICKCORE_ANNOTATE_H
+#ifndef MAGICKCORE_ANNOTATE_H
+#define MAGICKCORE_ANNOTATE_H
 
-#include "magick/draw.h"
+#include "MagickCore/draw.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  AnnotateComponentGenesis(void),
-  AnnotateImage(Image *,const DrawInfo *),
-  GetMultilineTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
-  GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *);
+  AnnotateImage(Image *,const DrawInfo *,ExceptionInfo *),
+  GetMultilineTypeMetrics(Image *,const DrawInfo *,TypeMetric *,
+    ExceptionInfo *),
+  GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *,ExceptionInfo *);
 
 extern MagickExport ssize_t
   FormatMagickCaption(Image *,DrawInfo *,const MagickBooleanType,TypeMetric *,
-    char **);
-
-extern MagickExport void
-  AnnotateComponentTerminus(void);
+    char **,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

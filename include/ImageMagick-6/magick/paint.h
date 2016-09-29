@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,33 +15,30 @@
 
   MagickCore image paint methods.
 */
-#ifndef _MAGICKCORE_PAINT_H
-#define _MAGICKCORE_PAINT_H
+#ifndef MAGICKCORE_PAINT_H
+#define MAGICKCORE_PAINT_H
 
-#include "magick/color.h"
-#include "magick/draw.h"
+#include "MagickCore/color.h"
+#include "MagickCore/draw.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport Image
-  *OilPaintImage(const Image *,const double,ExceptionInfo *);
+  *OilPaintImage(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  FloodfillPaintImage(Image *,const ChannelType,const DrawInfo *,
-    const MagickPixelPacket *,const ssize_t,const ssize_t,
-    const MagickBooleanType),
-  GradientImage(Image *,const GradientType,const SpreadMethod,
-    const PixelPacket *,const PixelPacket *),
-  OpaquePaintImage(Image *,const MagickPixelPacket *,const MagickPixelPacket *,
-    const MagickBooleanType),
-  OpaquePaintImageChannel(Image *,const ChannelType,const MagickPixelPacket *,
-    const MagickPixelPacket *,const MagickBooleanType),
-  TransparentPaintImage(Image *,const MagickPixelPacket *,
-    const Quantum,const MagickBooleanType),
-  TransparentPaintImageChroma(Image *,const MagickPixelPacket *,
-    const MagickPixelPacket *,const Quantum,const MagickBooleanType);
+  FloodfillPaintImage(Image *,const DrawInfo *,const PixelInfo *,const ssize_t,
+    const ssize_t,const MagickBooleanType,ExceptionInfo *),
+  GradientImage(Image *,const GradientType,const SpreadMethod,const StopInfo *,
+    const size_t,ExceptionInfo *),
+  OpaquePaintImage(Image *,const PixelInfo *,const PixelInfo *,
+    const MagickBooleanType,ExceptionInfo *),
+  TransparentPaintImage(Image *,const PixelInfo *,
+    const Quantum,const MagickBooleanType,ExceptionInfo *),
+  TransparentPaintImageChroma(Image *,const PixelInfo *,
+    const PixelInfo *,const Quantum,const MagickBooleanType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

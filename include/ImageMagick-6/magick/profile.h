@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,29 +15,17 @@
 
   MagickCore image profile methods.
 */
-#ifndef _MAGICKCORE_PROFILE_H
-#define _MAGICKCORE_PROFILE_H
+#ifndef MAGICKCORE_PROFILE_H
+#define MAGICKCORE_PROFILE_H
 
-#include "magick/string_.h"
+#include "MagickCore/string_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 typedef struct _ProfileInfo
-{
-  char
-    *name;
-
-  size_t
-    length;
-
-  unsigned char
-    *info;
-
-  size_t
-    signature;
-} ProfileInfo;
+  ProfileInfo;
 
 typedef enum
 {
@@ -57,10 +45,8 @@ extern MagickExport const StringInfo
 extern MagickExport MagickBooleanType
   CloneImageProfiles(Image *,const Image *),
   DeleteImageProfile(Image *,const char *),
-  ProfileImage(Image *,const char *,const void *,const size_t,
-    const MagickBooleanType),
-  SetImageProfile(Image *,const char *,const StringInfo *),
-  SyncImageProfiles(Image *);
+  ProfileImage(Image *,const char *,const void *,const size_t,ExceptionInfo *),
+  SetImageProfile(Image *,const char *,const StringInfo *,ExceptionInfo *);
 
 extern MagickExport StringInfo
   *RemoveImageProfile(Image *,const char *);

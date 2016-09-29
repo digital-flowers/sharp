@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickWand pixel wand methods.
 */
-#ifndef _MAGICKWAND_PIXEL_WAND_H
-#define _MAGICKWAND_PIXEL_WAND_H
+#ifndef MAGICKWAND_PIXEL_WAND_H
+#define MAGICKWAND_PIXEL_WAND_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -38,21 +38,21 @@ extern WandExport double
   PixelGetFuzz(const PixelWand *),
   PixelGetGreen(const PixelWand *),
   PixelGetMagenta(const PixelWand *),
-  PixelGetOpacity(const PixelWand *),
+  PixelGetAlpha(const PixelWand *),
   PixelGetRed(const PixelWand *),
   PixelGetYellow(const PixelWand *);
 
 extern WandExport ExceptionType
   PixelGetExceptionType(const PixelWand *);
 
-extern WandExport IndexPacket
-  PixelGetIndex(const PixelWand *);
-
 extern WandExport MagickBooleanType
   IsPixelWand(const PixelWand *),
   IsPixelWandSimilar(PixelWand *,PixelWand *,const double),
   PixelClearException(PixelWand *),
   PixelSetColor(PixelWand *,const char *);
+
+extern WandExport PixelInfo
+  PixelGetPixel(const PixelWand *);
 
 extern WandExport PixelWand
   *ClonePixelWand(const PixelWand *),
@@ -68,8 +68,9 @@ extern WandExport Quantum
   PixelGetBlueQuantum(const PixelWand *),
   PixelGetCyanQuantum(const PixelWand *),
   PixelGetGreenQuantum(const PixelWand *),
+  PixelGetIndex(const PixelWand *),
   PixelGetMagentaQuantum(const PixelWand *),
-  PixelGetOpacityQuantum(const PixelWand *),
+  PixelGetAlphaQuantum(const PixelWand *),
   PixelGetRedQuantum(const PixelWand *),
   PixelGetYellowQuantum(const PixelWand *);
 
@@ -79,8 +80,9 @@ extern WandExport size_t
 extern WandExport void
   ClearPixelWand(PixelWand *),
   PixelGetHSL(const PixelWand *,double *,double *,double *),
-  PixelGetMagickColor(const PixelWand *,MagickPixelPacket *),
-  PixelGetQuantumColor(const PixelWand *,PixelPacket *),
+  PixelGetMagickColor(const PixelWand *,PixelInfo *),
+  PixelGetQuantumPacket(const PixelWand *,PixelInfo *),
+  PixelGetQuantumPixel(const Image *,const PixelWand *,Quantum *),
   PixelSetAlpha(PixelWand *,const double),
   PixelSetAlphaQuantum(PixelWand *,const Quantum),
   PixelSetBlack(PixelWand *,const double),
@@ -95,13 +97,14 @@ extern WandExport void
   PixelSetGreen(PixelWand *,const double),
   PixelSetGreenQuantum(PixelWand *,const Quantum),
   PixelSetHSL(PixelWand *,const double,const double,const double),
-  PixelSetIndex(PixelWand *,const IndexPacket),
+  PixelSetIndex(PixelWand *,const Quantum),
   PixelSetMagenta(PixelWand *,const double),
   PixelSetMagentaQuantum(PixelWand *,const Quantum),
-  PixelSetMagickColor(PixelWand *,const MagickPixelPacket *),
-  PixelSetOpacity(PixelWand *,const double),
-  PixelSetOpacityQuantum(PixelWand *,const Quantum),
-  PixelSetQuantumColor(PixelWand *,const PixelPacket *),
+  PixelSetPixelColor(PixelWand *,const PixelInfo *),
+  PixelSetAlpha(PixelWand *,const double),
+  PixelSetAlphaQuantum(PixelWand *,const Quantum),
+  PixelSetPixelColor(PixelWand *,const PixelInfo *),
+  PixelSetQuantumPixel(const Image *,const Quantum *,PixelWand *),
   PixelSetRed(PixelWand *,const double),
   PixelSetRedQuantum(PixelWand *,const Quantum),
   PixelSetYellow(PixelWand *,const double),

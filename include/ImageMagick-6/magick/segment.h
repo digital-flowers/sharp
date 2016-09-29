@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image segment methods.
 */
-#ifndef _MAGICKCORE_SEGMENT_H
-#define _MAGICKCORE_SEGMENT_H
+#ifndef MAGICKCORE_SEGMENT_H
+#define MAGICKCORE_SEGMENT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -24,9 +24,9 @@ extern "C" {
 
 extern MagickExport MagickBooleanType
   GetImageDynamicThreshold(const Image *,const double,const double,
-    MagickPixelPacket *,ExceptionInfo *),
+    PixelInfo *,ExceptionInfo *),
   SegmentImage(Image *,const ColorspaceType,const MagickBooleanType,
-    const double,const double);
+    const double,const double,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1,22 +1,22 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-  
+
     http://www.imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickWand method attribute.
+  MagickWand method attributes.
 */
-#ifndef _MAGICKWAND_METHOD_ATTRIBUTE_H
-#define _MAGICKWAND_METHOD_ATTRIBUTE_H
+#ifndef MAGICKWAND_METHOD_ATTRIBUTE_H
+#define MAGICKWAND_METHOD_ATTRIBUTE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -46,7 +46,7 @@ extern "C" {
 #    define WandExport __declspec(dllimport)
 #   endif
 #   if defined(_VISUALC_)
-#    pragma message( "MagickWand lib DLL import interface" )
+#    pragma message( "MagickCore lib DLL import interface" )
 #   endif
 #  else
 #   if defined(__clang__) || defined(__GNUC__)
@@ -55,23 +55,23 @@ extern "C" {
 #    define WandExport __declspec(dllexport)
 #   endif
 #   if defined(_VISUALC_)
-#    pragma message( "MagickWand lib DLL export interface" )
+#    pragma message( "MagickCore lib DLL export interface" )
 #   endif
 #  endif
 # else
 #  define WandExport
 #  if defined(_VISUALC_)
-#   pragma message( "MagickWand lib static interface" )
+#   pragma message( "MagickCore lib static interface" )
 #  endif
 # endif
 
 # if defined(_DLL) && !defined(_LIB)
 #  if defined(_VISUALC_)
-#   pragma message( "MagickWand module DLL export interface" )
+#   pragma message( "MagickCore module DLL export interface" )
 #  endif
 # else
 #  if defined(_VISUALC_)
-#   pragma message( "MagickWand module static interface" )
+#   pragma message( "MagickCore module static interface" )
 #  endif
 
 # endif
@@ -94,16 +94,16 @@ extern "C" {
 # endif
 #endif
 
-#define WandSignature  0xabacadabUL
-#if !defined(MaxTextExtent)
-# define MaxTextExtent  4096
+#define MagickWandSignature  0xabacadabUL
+#if !defined(MagickPathExtent)
+# define MagickPathExtent  4096
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
 #  define wand_aligned(x)  __attribute__((aligned(x)))
 #  define wand_attribute  __attribute__
 #  define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
-#  define wand_unreferenced(x)
+#  define wand_unreferenced(x)  /* nothing */
 #elif defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 #  define wand_aligned(x)  __declspec(align(x))
 #  define wand_attribute(x)  /* nothing */
@@ -116,14 +116,18 @@ extern "C" {
 #  define wand_unreferenced(x)  /* nothing */
 #endif
 
-#if (defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))) && !defined(__apple_build_version__)
+#if !defined(__clang__) && (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
 #  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#  define wand_cold_spot  __attribute__((__cold__))
-#  define wand_hot_spot  __attribute__((__hot__))
 #else
 #  define wand_alloc_size(x)  /* nothing */
 #  define wand_alloc_sizes(x,y)  /* nothing */
+#endif
+
+#if defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
+#  define wand_cold_spot  __attribute__((__cold__))
+#  define wand_hot_spot  __attribute__((__hot__))
+#else
 #  define wand_cold_spot
 #  define wand_hot_spot
 #endif

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
@@ -15,17 +15,15 @@
 
   MagickCore quantum inline methods.
 */
-#ifndef _MAGICKCORE_QUANTUM_H
-#define _MAGICKCORE_QUANTUM_H
+#ifndef MAGICKCORE_QUANTUM_H
+#define MAGICKCORE_QUANTUM_H
 
-#include "magick/image.h"
-#include "magick/semaphore.h"
+#include "MagickCore/image.h"
+#include "MagickCore/semaphore.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#define RoundToQuantum(quantum)  ClampToQuantum(quantum)
 
 typedef enum
 {
@@ -53,9 +51,16 @@ typedef enum
 {
   UndefinedQuantum,
   AlphaQuantum,
+  BGRAQuantum,
+  BGROQuantum,
+  BGRQuantum,
   BlackQuantum,
   BlueQuantum,
+  CbYCrAQuantum,
+  CbYCrQuantum,
+  CbYCrYQuantum,
   CMYKAQuantum,
+  CMYKOQuantum,
   CMYKQuantum,
   CyanQuantum,
   GrayAlphaQuantum,
@@ -67,18 +72,10 @@ typedef enum
   OpacityQuantum,
   RedQuantum,
   RGBAQuantum,
-  BGRAQuantum,
   RGBOQuantum,
-  RGBQuantum,
-  YellowQuantum,
-  GrayPadQuantum,  /* deprecated */
   RGBPadQuantum,
-  CbYCrYQuantum,
-  CbYCrQuantum,
-  CbYCrAQuantum,
-  CMYKOQuantum,
-  BGRQuantum,
-  BGROQuantum
+  RGBQuantum,
+  YellowQuantum
 } QuantumType;
 
 typedef struct _QuantumInfo
@@ -172,11 +169,11 @@ extern MagickExport QuantumType
   GetQuantumType(Image *,ExceptionInfo *);
 
 extern MagickExport size_t
-  ExportQuantumPixels(const Image *,const CacheView *,const QuantumInfo *,
-    const QuantumType,unsigned char *,ExceptionInfo *),
+  ExportQuantumPixels(const Image *,CacheView *,QuantumInfo *,const QuantumType,
+    unsigned char *magick_restrict,ExceptionInfo *),
   GetQuantumExtent(const Image *,const QuantumInfo *,const QuantumType),
-  ImportQuantumPixels(Image *,CacheView *,const QuantumInfo *,const QuantumType,
-    const unsigned char *,ExceptionInfo *);
+  ImportQuantumPixels(const Image *,CacheView *,QuantumInfo *,const QuantumType,
+    const unsigned char *magick_restrict,ExceptionInfo *);
 
 extern MagickExport unsigned char
   *GetQuantumPixels(const QuantumInfo *);

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,36 +15,26 @@
 
   MagickCore image constitute methods.
 */
-#ifndef _MAGICKCORE_CONSTITUTE_H
-#define _MAGICKCORE_CONSTITUTE_H
+#ifndef MAGICKCORE_CONSTITUTE_H
+#define MAGICKCORE_CONSTITUTE_H
+
+#include "MagickCore/pixel.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-typedef enum
-{
-  UndefinedPixel,
-  CharPixel,
-  DoublePixel,
-  FloatPixel,
-  IntegerPixel,
-  LongPixel,
-  QuantumPixel,
-  ShortPixel
-} StorageType;
-
 extern MagickExport Image
   *ConstituteImage(const size_t,const size_t,const char *,const StorageType,
     const void *,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
-  *PingImages(const ImageInfo *,ExceptionInfo *),
+  *PingImages(ImageInfo *,const char *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
-  *ReadImages(const ImageInfo *,ExceptionInfo *),
+  *ReadImages(ImageInfo *,const char *,ExceptionInfo *),
   *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  WriteImage(const ImageInfo *,Image *),
+  WriteImage(const ImageInfo *,Image *,ExceptionInfo *),
   WriteImages(const ImageInfo *,Image *,const char *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
