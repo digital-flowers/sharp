@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore image quantization methods.
 */
-#ifndef MAGICKCORE_QUANTIZE_H
-#define MAGICKCORE_QUANTIZE_H
+#ifndef _MAGICKCORE_QUANTIZE_H
+#define _MAGICKCORE_QUANTIZE_H
 
-#include "MagickCore/colorspace.h"
+#include "magick/colorspace.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -35,32 +35,37 @@ typedef enum
 typedef struct _QuantizeInfo
 {
   size_t
-    number_colors;     /* desired maximum number of colors */
+    number_colors;
 
   size_t
     tree_depth;
 
+  MagickBooleanType
+    dither;
+
   ColorspaceType
     colorspace;
-
-  DitherMethod
-    dither_method;
 
   MagickBooleanType
     measure_error;
 
   size_t
     signature;
+
+  DitherMethod
+    dither_method;
 } QuantizeInfo;
 
 extern MagickExport MagickBooleanType
-  CompressImageColormap(Image *,ExceptionInfo *),
-  GetImageQuantizeError(Image *,ExceptionInfo *),
-  PosterizeImage(Image *,const size_t,const DitherMethod,ExceptionInfo *),
-  QuantizeImage(const QuantizeInfo *,Image *,ExceptionInfo *),
-  QuantizeImages(const QuantizeInfo *,Image *,ExceptionInfo *),
-  RemapImage(const QuantizeInfo *,Image *,const Image *,ExceptionInfo *),
-  RemapImages(const QuantizeInfo *,Image *,const Image *,ExceptionInfo *);
+  CompressImageColormap(Image *),
+  GetImageQuantizeError(Image *),
+  PosterizeImage(Image *,const size_t,const MagickBooleanType),
+  PosterizeImageChannel(Image *,const ChannelType,const size_t,
+    const MagickBooleanType),
+  QuantizeImage(const QuantizeInfo *,Image *),
+  QuantizeImages(const QuantizeInfo *,Image *),
+  RemapImage(const QuantizeInfo *,Image *,const Image *),
+  RemapImages(const QuantizeInfo *,Image *,const Image *);
 
 extern MagickExport QuantizeInfo
   *AcquireQuantizeInfo(const ImageInfo *),

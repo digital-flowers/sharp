@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
 
   MagickCore statistical methods.
 */
-#ifndef MAGICKCORE_STATISTIC_H
-#define MAGICKCORE_STATISTIC_H
+#ifndef _MAGICKCORE_STATISTIC_H
+#define _MAGICKCORE_STATISTIC_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
+#include "magick/draw.h"
+
 #define MaximumNumberOfImageMoments  8
-#define MaximumNumberOfPerceptualColorspaces  6
 #define MaximumNumberOfPerceptualHashes  7
 
 typedef struct _ChannelStatistics
@@ -32,7 +33,6 @@ typedef struct _ChannelStatistics
     depth;
 
   double
-    area,
     minima,
     maxima,
     sum,
@@ -43,14 +43,15 @@ typedef struct _ChannelStatistics
     variance,
     standard_deviation,
     kurtosis,
-    skewness,
-    entropy;
+    skewness;
 } ChannelStatistics;
+
+#undef I
 
 typedef struct _ChannelMoments
 {
   double
-    invariant[MaximumNumberOfImageMoments+1];
+    I[32];
 
   PointInfo
     centroid,
@@ -65,66 +66,54 @@ typedef struct _ChannelMoments
 typedef struct _ChannelPerceptualHash
 {
   double
-    srgb_hu_phash[MaximumNumberOfImageMoments+1],
-    hclp_hu_phash[MaximumNumberOfImageMoments+1];
-
-  size_t
-    number_colorspaces;
-
-  ColorspaceType
-    colorspace[MaximumNumberOfPerceptualColorspaces+1];
-
-  double
-    phash[MaximumNumberOfPerceptualColorspaces+1][MaximumNumberOfImageMoments+1];
-
-  size_t
-    number_channels;
+    P[32],
+    Q[32];
 } ChannelPerceptualHash;
 
 typedef enum
 {
   UndefinedEvaluateOperator,
-  AbsEvaluateOperator,
   AddEvaluateOperator,
-  AddModulusEvaluateOperator,
   AndEvaluateOperator,
-  CosineEvaluateOperator,
   DivideEvaluateOperator,
-  ExponentialEvaluateOperator,
+  LeftShiftEvaluateOperator,
+  MaxEvaluateOperator,
+  MinEvaluateOperator,
+  MultiplyEvaluateOperator,
+  OrEvaluateOperator,
+  RightShiftEvaluateOperator,
+  SetEvaluateOperator,
+  SubtractEvaluateOperator,
+  XorEvaluateOperator,
+  PowEvaluateOperator,
+  LogEvaluateOperator,
+  ThresholdEvaluateOperator,
+  ThresholdBlackEvaluateOperator,
+  ThresholdWhiteEvaluateOperator,
   GaussianNoiseEvaluateOperator,
   ImpulseNoiseEvaluateOperator,
   LaplacianNoiseEvaluateOperator,
-  LeftShiftEvaluateOperator,
-  LogEvaluateOperator,
-  MaxEvaluateOperator,
-  MeanEvaluateOperator,
-  MedianEvaluateOperator,
-  MinEvaluateOperator,
   MultiplicativeNoiseEvaluateOperator,
-  MultiplyEvaluateOperator,
-  OrEvaluateOperator,
   PoissonNoiseEvaluateOperator,
-  PowEvaluateOperator,
-  RightShiftEvaluateOperator,
-  RootMeanSquareEvaluateOperator,
-  SetEvaluateOperator,
-  SineEvaluateOperator,
-  SubtractEvaluateOperator,
-  SumEvaluateOperator,
-  ThresholdBlackEvaluateOperator,
-  ThresholdEvaluateOperator,
-  ThresholdWhiteEvaluateOperator,
   UniformNoiseEvaluateOperator,
-  XorEvaluateOperator
+  CosineEvaluateOperator,
+  SineEvaluateOperator,
+  AddModulusEvaluateOperator,
+  MeanEvaluateOperator,
+  AbsEvaluateOperator,
+  ExponentialEvaluateOperator,
+  MedianEvaluateOperator,
+  SumEvaluateOperator,
+  RootMeanSquareEvaluateOperator
 } MagickEvaluateOperator;
 
 typedef enum
 {
   UndefinedFunction,
-  ArcsinFunction,
-  ArctanFunction,
   PolynomialFunction,
-  SinusoidFunction
+  SinusoidFunction,
+  ArcsinFunction,
+  ArctanFunction
 } MagickFunction;
 
 typedef enum
@@ -137,31 +126,46 @@ typedef enum
   MinimumStatistic,
   ModeStatistic,
   NonpeakStatistic,
-  RootMeanSquareStatistic,
-  StandardDeviationStatistic
+  StandardDeviationStatistic,
+  RootMeanSquareStatistic
 } StatisticType;
 
 extern MagickExport ChannelStatistics
-  *GetImageStatistics(const Image *,ExceptionInfo *);
+  *GetImageChannelStatistics(const Image *,ExceptionInfo *);
 
 extern MagickExport ChannelMoments
-  *GetImageMoments(const Image *,ExceptionInfo *);
+  *GetImageChannelMoments(const Image *,ExceptionInfo *);
 
 extern MagickExport ChannelPerceptualHash
-  *GetImagePerceptualHash(const Image *,ExceptionInfo *);
+  *GetImageChannelPerceptualHash(const Image *,ExceptionInfo *);
 
 extern MagickExport Image
   *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *),
   *PolynomialImage(const Image *,const size_t,const double *,ExceptionInfo *),
+  *PolynomialImageChannel(const Image *,const ChannelType,const size_t,
+    const double *,ExceptionInfo *),
   *StatisticImage(const Image *,const StatisticType,const size_t,const size_t,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  *StatisticImageChannel(const Image *,const ChannelType,const StatisticType,
+    const size_t,const size_t,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   EvaluateImage(Image *,const MagickEvaluateOperator,const double,
     ExceptionInfo *),
+  EvaluateImageChannel(Image *,const ChannelType,const MagickEvaluateOperator,
+    const double,ExceptionInfo *),
   FunctionImage(Image *,const MagickFunction,const size_t,const double *,
     ExceptionInfo *),
-  GetImageEntropy(const Image *,double *,ExceptionInfo *),
+  FunctionImageChannel(Image *,const ChannelType,const MagickFunction,
+    const size_t,const double *,ExceptionInfo *),
+  GetImageChannelExtrema(const Image *,const ChannelType,size_t *,size_t *,
+    ExceptionInfo *),
+  GetImageChannelMean(const Image *,const ChannelType,double *,double *,
+    ExceptionInfo *),
+  GetImageChannelKurtosis(const Image *,const ChannelType,double *,double *,
+    ExceptionInfo *),
+  GetImageChannelRange(const Image *,const ChannelType,double *,double *,
+    ExceptionInfo *),
   GetImageExtrema(const Image *,size_t *,size_t *,ExceptionInfo *),
   GetImageMean(const Image *,double *,double *,ExceptionInfo *),
   GetImageKurtosis(const Image *,double *,double *,ExceptionInfo *),

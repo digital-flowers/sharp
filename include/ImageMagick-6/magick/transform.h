@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image transform methods.
 */
-#ifndef MAGICKCORE_TRANSFORM_H
-#define MAGICKCORE_TRANSFORM_H
+#ifndef _MAGICKCORE_TRANSFORM_H
+#define _MAGICKCORE_TRANSFORM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -38,6 +38,10 @@ extern MagickExport Image
   *TransposeImage(const Image *,ExceptionInfo *),
   *TransverseImage(const Image *,ExceptionInfo *),
   *TrimImage(const Image *,ExceptionInfo *);
+
+extern MagickExport MagickBooleanType
+  TransformImage(Image **,const char *,const char *),
+  TransformImages(Image **,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore morphology methods.
 */
-#ifndef MAGICKCORE_MORPHOLOGY_H
-#define MAGICKCORE_MORPHOLOGY_H
+#ifndef _MAGICKCORE_MORPHOLOGY_H
+#define _MAGICKCORE_MORPHOLOGY_H
 
-#include "MagickCore/geometry.h"
+#include "magick/geometry.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -33,7 +33,6 @@ typedef enum
   LoGKernel,
   BlurKernel,
   CometKernel,
-  BinomialKernel,
   LaplacianKernel,    /* Convolution Kernels, by Name */
   SobelKernel,
   FreiChenKernel,
@@ -63,7 +62,8 @@ typedef enum
   ManhattanKernel,
   OctagonalKernel,
   EuclideanKernel,
-  UserDefinedKernel   /* User Specified Kernel Array */
+  UserDefinedKernel,   /* User Specified Kernel Array */
+  BinomialKernel
 } KernelInfoType;
 
 typedef enum
@@ -77,7 +77,7 @@ typedef enum
   DilateMorphology,             /* Maximum Value in Neighbourhood */
   ErodeIntensityMorphology,     /* Pixel Pick using GreyScale Erode */
   DilateIntensityMorphology,    /* Pixel Pick using GreyScale Dialate */
-  IterativeDistanceMorphology,  /* Add Kernel Value, take Minimum */
+  DistanceMorphology,           /* Add Kernel Value, take Minimum */
 /* Second-level Morphology methods */
   OpenMorphology,               /* Dilate then Erode */
   CloseMorphology,              /* Erode then Dilate */
@@ -94,12 +94,12 @@ typedef enum
   HitAndMissMorphology,         /* Foreground/Background pattern matching */
   ThinningMorphology,           /* Remove matching pixels from image */
   ThickenMorphology,            /* Add matching pixels from image */
-/* Directly Applied Morphology methods */
-  DistanceMorphology,           /* Add Kernel Value, take Minimum */
-  VoronoiMorphology             /* Distance matte channel copy nearest color */
+/* Experimental Morphology methods */
+  VoronoiMorphology,            /* distance matte channel copy nearest color */
+  IterativeDistanceMorphology   /* Add Kernel Value, take Minimum */
 } MorphologyMethod;
 
-typedef struct _KernelInfo
+typedef struct KernelInfo
 {
   KernelInfoType
     type;
@@ -112,17 +112,15 @@ typedef struct _KernelInfo
     x,
     y;
 
-  MagickRealType
-    *values;
-
   double
+    *values,
     minimum,
     maximum,
     negative_range,
     positive_range,
     angle;
 
-  struct _KernelInfo
+  struct KernelInfo
     *next;
 
   size_t
@@ -130,20 +128,20 @@ typedef struct _KernelInfo
 } KernelInfo;
 
 extern MagickExport KernelInfo
-  *AcquireKernelInfo(const char *,ExceptionInfo *),
-  *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *,
-    ExceptionInfo *),
+  *AcquireKernelInfo(const char *),
+  *AcquireKernelBuiltIn(const KernelInfoType,const GeometryInfo *),
   *CloneKernelInfo(const KernelInfo *),
   *DestroyKernelInfo(KernelInfo *);
 
 extern MagickExport Image
   *MorphologyImage(const Image *,const MorphologyMethod,const ssize_t,
-    const KernelInfo *,ExceptionInfo *);
+    const KernelInfo *,ExceptionInfo *),
+  *MorphologyImageChannel(const Image *,const ChannelType,
+    const MorphologyMethod,const ssize_t,const KernelInfo *,ExceptionInfo *);
 
 extern MagickExport void
   ScaleGeometryKernelInfo(KernelInfo *,const char *),
-  ScaleKernelInfo(KernelInfo *,const double,const GeometryFlags),
-  UnityAddKernelInfo(KernelInfo *,const double);
+  ShowKernelInfo(const KernelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

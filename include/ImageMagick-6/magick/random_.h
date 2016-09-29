@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore random methods.
 */
-#ifndef MAGICKCORE_RANDOM__H
-#define MAGICKCORE_RANDOM__H
+#ifndef _MAGICKCORE_RANDOM__H
+#define _MAGICKCORE_RANDOM__H
 
-#include "MagickCore/string_.h"
+#include "magick/string_.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -37,6 +37,9 @@ extern MagickExport double
   GetRandomValue(RandomInfo *),
   GetPseudoRandomValue(RandomInfo *);
 
+extern MagickExport MagickBooleanType
+  RandomComponentGenesis(void);
+
 extern MagickExport RandomInfo
   *AcquireRandomInfo(void),
   *DestroyRandomInfo(RandomInfo *);
@@ -48,6 +51,8 @@ extern MagickExport unsigned long
   GetRandomSecretKey(const RandomInfo *);
 
 extern MagickExport void
+  RandomComponentTerminus(void),
+  SeedPseudoRandomGenerator(const unsigned long),
   SetRandomKey(RandomInfo *,const size_t,unsigned char *),
   SetRandomSecretKey(const unsigned long),
   SetRandomTrueRandom(const MagickBooleanType);

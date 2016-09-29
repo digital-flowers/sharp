@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore montage methods.
 */
-#ifndef MAGICKCORE_MONTAGE_H
-#define MAGICKCORE_MONTAGE_H
+#ifndef _MAGICKCORE_MONTAGE_H
+#define _MAGICKCORE_MONTAGE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -49,18 +49,18 @@ typedef struct _MontageInfo
   MagickBooleanType
     shadow;
 
-  PixelInfo
-    alpha_color,
+  PixelPacket
+    fill,
+    stroke,
     background_color,
     border_color,
-    fill,
-    stroke;
+    matte_color;
 
   GravityType
     gravity;
 
   char
-    filename[MagickPathExtent];
+    filename[MaxTextExtent];
 
   MagickBooleanType
     debug;

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickWand import command-line method.
 */
-#ifndef MAGICKWAND_IMPORT_H
-#define MAGICKWAND_IMPORT_H
+#ifndef _MAGICKWAND_IMPORT_H
+#define _MAGICKWAND_IMPORT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

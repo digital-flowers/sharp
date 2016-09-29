@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   The ImageMagick mime methods.
 */
-#ifndef MAGICKCORE_MIME_H
-#define MAGICKCORE_MIME_H
+#ifndef _MIME_MIME_H
+#define _MIME_MIME_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -35,11 +35,14 @@ extern MagickExport const char
 
 extern MagickExport MagickBooleanType
   ListMimeInfo(FILE *,ExceptionInfo *),
-  LoadMimeLists(const char *,ExceptionInfo *);
+  MimeComponentGenesis(void);
 
 extern MagickExport const MimeInfo
   *GetMimeInfo(const char *,const unsigned char *,const size_t,ExceptionInfo *),
   **GetMimeInfoList(const char *,size_t *,ExceptionInfo *);
+
+extern MagickExport void
+  MimeComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

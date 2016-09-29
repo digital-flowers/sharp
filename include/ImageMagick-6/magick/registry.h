@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore registry methods.
 */
-#ifndef MAGICKCORE_REGISTRY_H
-#define MAGICKCORE_REGISTRY_H
+#ifndef _MAGICKCORE_REGISTRY_H
+#define _MAGICKCORE_REGISTRY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -36,11 +36,13 @@ extern MagickExport char
 extern MagickExport MagickBooleanType
   DefineImageRegistry(const RegistryType,const char *,ExceptionInfo *),
   DeleteImageRegistry(const char *),
+  RegistryComponentGenesis(void),
   SetImageRegistry(const RegistryType,const char *,const void *,
     ExceptionInfo *);
 
 extern MagickExport void
   *GetImageRegistry(const RegistryType,const char *,ExceptionInfo *),
+  RegistryComponentTerminus(void),
   *RemoveImageRegistry(const char *),
   ResetImageRegistryIterator(void);
 

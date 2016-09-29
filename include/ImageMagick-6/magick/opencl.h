@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,60 +15,66 @@
 
   MagickCore OpenCL public methods.
 */
-#ifndef MAGICKCORE_OPENCL_H
-#define MAGICKCORE_OPENCL_H
+#ifndef _MAGICKCORE_OPENCL_H
+#define _MAGICKCORE_OPENCL_H
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-typedef enum
-{
-  UndefinedCLDeviceType,
-  CpuCLDeviceType,
-  GpuCLDeviceType
-} MagickCLDeviceType;
+/* OpenCL program modules */
+typedef enum {
+  MAGICK_OPENCL_ACCELERATE = 0
+  ,MAGICK_OPENCL_NUM_PROGRAMS   /* !!! This has to be the last entry !!! */
+} MagickOpenCLProgram;
 
-typedef struct _KernelProfileRecord
-{
-  char
-    *kernel_name;
 
-  unsigned long
-    count,
-    max,
-    min,
-    total;
-}* KernelProfileRecord;
+typedef struct _MagickCLEnv* MagickCLEnv;
 
-typedef struct _MagickCLDevice* MagickCLDevice;
+extern MagickExport
+  MagickCLEnv AcquireMagickOpenCLEnv();
 
-extern MagickExport const char
-  *GetOpenCLDeviceName(const MagickCLDevice),
-  *GetOpenCLDeviceVersion(const MagickCLDevice);
+extern MagickExport
+  MagickBooleanType RelinquishMagickOpenCLEnv(MagickCLEnv);
 
-extern MagickExport const KernelProfileRecord
-  *GetOpenCLKernelProfileRecords(const MagickCLDevice,size_t *);
+extern MagickExport
+  MagickCLEnv GetDefaultOpenCLEnv();
 
-extern MagickExport double
-  GetOpenCLDeviceBenchmarkScore(const MagickCLDevice);
+extern MagickExport
+  MagickCLEnv SetDefaultOpenCLEnv(MagickCLEnv);
 
-extern MagickExport MagickCLDevice
-  *GetOpenCLDevices(size_t *,ExceptionInfo *);
 
-extern MagickExport MagickCLDeviceType
-  GetOpenCLDeviceType(const MagickCLDevice);
+/* Parameter type accepted by SetMagickOpenCLEnvParm and GetMagickOpenCLEnvParm */
+typedef enum {
+    MAGICK_OPENCL_ENV_PARAM_DEVICE                 /* cl_device_id (from OpenCL) */
+  , MAGICK_OPENCL_ENV_PARAM_OPENCL_DISABLED        /* MagickBooleanType */
+  , MAGICK_OPENCL_ENV_PARAM_OPENCL_INITIALIZED     /* MagickBooleanType */
+  , MAGICK_OPENCL_ENV_PARAM_PROGRAM_CACHE_DISABLED /* MagickBooleanType */
+                                                   /* if true, disable the kernel binary cache */
+  , MAGICK_OPENCL_ENV_PARAM_REGENERATE_PROFILE     /* MagickBooleanType */
+                                                   /* if true, rerun microbenchmark in auto device selection */
+} MagickOpenCLEnvParam;
 
-extern MagickExport MagickBooleanType
-  GetOpenCLDeviceEnabled(const MagickCLDevice),
-  GetOpenCLEnabled(void),
-  SetOpenCLEnabled(const MagickBooleanType);
+extern MagickExport
+  MagickBooleanType SetMagickOpenCLEnvParam(MagickCLEnv, MagickOpenCLEnvParam, size_t, void*, ExceptionInfo*);
 
-extern MagickExport void
-  SetOpenCLDeviceEnabled(MagickCLDevice,
-    const MagickBooleanType),
-  SetOpenCLKernelProfileEnabled(MagickCLDevice,
-    const MagickBooleanType);
+extern MagickExport
+  MagickBooleanType GetMagickOpenCLEnvParam(MagickCLEnv, MagickOpenCLEnvParam, size_t, void*, ExceptionInfo*);
+
+
+extern MagickExport
+  MagickBooleanType InitOpenCLEnv(MagickCLEnv, ExceptionInfo*);
+
+typedef enum {
+  MAGICK_OPENCL_OFF = 0
+, MAGICK_OPENCL_DEVICE_SELECT_AUTO = 1
+, MAGICK_OPENCL_DEVICE_SELECT_USER = 2
+, MAGICK_OPENCL_DEVICE_SELECT_AUTO_CLEAR_CACHE = 3
+} ImageMagickOpenCLMode ;
+
+extern MagickExport
+MagickBooleanType InitImageMagickOpenCL(ImageMagickOpenCLMode, void*, void*, ExceptionInfo*);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1,12 +1,12 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-
+  
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-
+  
     http://www.imagemagick.org/script/license.php
-
+  
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,8 @@
 
   MagickCore method attributes.
 */
-#ifndef MAGICKCORE_METHOD_ATTRIBUTE_H
-#define MAGICKCORE_METHOD_ATTRIBUTE_H
+#ifndef _MAGICKCORE_METHOD_ATTRIBUTE_H
+#define _MAGICKCORE_METHOD_ATTRIBUTE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -101,11 +101,10 @@ extern "C" {
 # define ModuleExport  MagickExport
 #endif
 
-#define MagickCoreSignature  0xabacadabUL
-#if !defined(MagickPathExtent)
-# define MagickPathExtent  4096  /* always >= 4096 */
+#define MagickSignature  0xabacadabUL
+#if !defined(MaxTextExtent)
+# define MaxTextExtent  4096  /* always >= 4096 */
 #endif
-# define MaxTextExtent  MagickPathExtent
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
 #  define magick_aligned(x,y)  x __attribute__((aligned(y)))
@@ -124,18 +123,14 @@ extern "C" {
 #  define magick_unreferenced(x)  /* nothing */
 #endif
 
-#if !defined(__clang__) && (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
+#if (defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))) && !defined(__apple_build_version__)
 #  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#else
-#  define magick_alloc_size(x)  /* nothing */
-#  define magick_alloc_sizes(x,y)  /* nothing */
-#endif
-
-#if defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
 #  define magick_cold_spot  __attribute__((__cold__))
 #  define magick_hot_spot  __attribute__((__hot__))
 #else
+#  define magick_alloc_size(x)  /* nothing */
+#  define magick_alloc_sizes(x,y)  /* nothing */
 #  define magick_cold_spot
 #  define magick_hot_spot
 #endif

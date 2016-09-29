@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickCore image compare methods.
 */
-#ifndef MAGICKCORE_COMPARE_H
-#define MAGICKCORE_COMPARE_H
+#ifndef _MAGICKCORE_COMPARE_H
+#define _MAGICKCORE_COMPARE_H
 
-#include "MagickCore/image.h"
+#include "magick/image.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -26,33 +26,40 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedErrorMetric,
+  UndefinedMetric,
   AbsoluteErrorMetric,
-  FuzzErrorMetric,
   MeanAbsoluteErrorMetric,
-  MeanErrorPerPixelErrorMetric,
+  MeanErrorPerPixelMetric,
   MeanSquaredErrorMetric,
-  NormalizedCrossCorrelationErrorMetric,
   PeakAbsoluteErrorMetric,
-  PeakSignalToNoiseRatioErrorMetric,
-  PerceptualHashErrorMetric,
-  RootMeanSquaredErrorMetric
+  PeakSignalToNoiseRatioMetric,
+  RootMeanSquaredErrorMetric,
+  NormalizedCrossCorrelationErrorMetric,
+  FuzzErrorMetric,
+  UndefinedErrorMetric = 0,
+  PerceptualHashErrorMetric = 0xff
 } MetricType;
 
 extern MagickExport double
-  *GetImageDistortions(Image *,const Image *,const MetricType,ExceptionInfo *);
+  *GetImageChannelDistortions(Image *,const Image *,const MetricType,
+    ExceptionInfo *);
 
 extern MagickExport Image
+  *CompareImageChannels(Image *,const Image *,const ChannelType,
+    const MetricType,double *,ExceptionInfo *),
   *CompareImages(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
-  *SimilarityImage(const Image *,const Image *,const MetricType,const double,
+  *SimilarityImage(Image *,const Image *,RectangleInfo *,double *,
+    ExceptionInfo *),
+  *SimilarityMetricImage(Image *,const Image *,const MetricType,
     RectangleInfo *,double *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  GetImageChannelDistortion(Image *,const Image *,const ChannelType,
+    const MetricType,double *,ExceptionInfo *),
   GetImageDistortion(Image *,const Image *,const MetricType,double *,
     ExceptionInfo *),
-  IsImagesEqual(const Image *,const Image *,ExceptionInfo *),
-  SetImageColorMetric(Image *,const Image *,ExceptionInfo *);
+  IsImagesEqual(Image *,const Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

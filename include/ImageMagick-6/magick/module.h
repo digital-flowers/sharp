@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
 
   MagickCore module methods.
 */
-#ifndef MAGICKCORE_MODULE_H
-#define MAGICKCORE_MODULE_H
+#ifndef _MAGICKCORE_MODULE_H
+#define _MAGICKCORE_MODULE_H
 
-#include "MagickCore/version.h"
+#include <time.h>
+#include "magick/version.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -54,6 +55,10 @@ typedef struct _ModuleInfo
   MagickBooleanType
     stealth;
 
+  struct _ModuleInfo
+    *previous,
+    *next;  /* deprecated, use GetModuleInfoList() */
+
   size_t
     signature;
 } ModuleInfo;
@@ -70,13 +75,17 @@ extern MagickExport const ModuleInfo
 extern MagickExport MagickBooleanType
   InvokeDynamicImageFilter(const char *,Image **,const int,const char **,
     ExceptionInfo *),
-  ListModuleInfo(FILE *,ExceptionInfo *);
+  ListModuleInfo(FILE *,ExceptionInfo *),
+  ModuleComponentGenesis(void),
+  OpenModule(const char *,ExceptionInfo *),
+  OpenModules(ExceptionInfo *);
 
 extern MagickExport ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport void
   DestroyModuleList(void),
+  ModuleComponentTerminus(void),
   RegisterStaticModules(void),
   UnregisterStaticModules(void);
 

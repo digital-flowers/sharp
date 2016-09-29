@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
 
   MagickWand drawing wand methods.
 */
-#ifndef MAGICKWAND_DRAWING_WAND_H
-#define MAGICKWAND_DRAWING_WAND_H
+#ifndef _MAGICKWAND_DRAWING_WAND_H
+#define _MAGICKWAND_DRAWING_WAND_H
 
-#include "MagickWand/pixel-wand.h"
+#include "wand/pixel-wand.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -32,7 +32,6 @@ extern WandExport AlignType
 
 extern WandExport char
   *DrawGetClipPath(const DrawingWand *),
-  *DrawGetDensity(const DrawingWand *),
   *DrawGetException(const DrawingWand *,ExceptionType *),
   *DrawGetFont(const DrawingWand *),
   *DrawGetFontFamily(const DrawingWand *),
@@ -64,13 +63,10 @@ extern WandExport DrawInfo
   *PeekDrawingWand(const DrawingWand *);
 
 extern WandExport DrawingWand
-  *AcquireDrawingWand(const DrawInfo *,Image *),
   *CloneDrawingWand(const DrawingWand *),
   *DestroyDrawingWand(DrawingWand *),
+  *DrawAllocateWand(const DrawInfo *,Image *),
   *NewDrawingWand(void);
-
-extern WandExport ExceptionInfo
-  *DrawCloneExceptionInfo(const DrawingWand *wand);
 
 extern WandExport ExceptionType
   DrawGetExceptionType(const DrawingWand *);
@@ -100,7 +96,6 @@ extern WandExport MagickBooleanType
     const double,const double),
   DrawRender(DrawingWand *),
   DrawSetClipPath(DrawingWand *,const char *),
-  DrawSetDensity(DrawingWand *,const char *),
   DrawSetFillPatternURL(DrawingWand *,const char *),
   DrawSetFont(DrawingWand *,const char *),
   DrawSetFontFamily(DrawingWand *,const char *),
@@ -125,7 +120,6 @@ extern WandExport size_t
 extern WandExport void
   ClearDrawingWand(DrawingWand *),
   DrawAffine(DrawingWand *,const AffineMatrix *),
-  DrawAlpha(DrawingWand *,const double,const double,const PaintMethod),
   DrawAnnotation(DrawingWand *,const double,const double,const unsigned char *),
   DrawArc(DrawingWand *,const double,const double,const double,const double,
     const double,const double),
@@ -143,6 +137,7 @@ extern WandExport void
   DrawSetTextInterwordSpacing(DrawingWand *,const double),
   DrawGetTextUnderColor(const DrawingWand *,PixelWand *),
   DrawLine(DrawingWand *,const double, const double,const double,const double),
+  DrawMatte(DrawingWand *,const double,const double,const PaintMethod),
   DrawPathClose(DrawingWand *),
   DrawPathCurveToAbsolute(DrawingWand *,const double,const double,const double,
     const double,const double,const double),
@@ -215,8 +210,7 @@ extern WandExport void
   DrawSetTextDirection(DrawingWand *,const DirectionType),
   DrawSetTextEncoding(DrawingWand *,const char *),
   DrawSetTextUnderColor(DrawingWand *,const PixelWand *),
-  DrawSetViewbox(DrawingWand *,const double,const double,const double,
-    const double),
+  DrawSetViewbox(DrawingWand *,ssize_t,ssize_t,ssize_t,ssize_t),
   DrawSkewX(DrawingWand *,const double),
   DrawSkewY(DrawingWand *,const double),
   DrawTranslate(DrawingWand *,const double,const double);

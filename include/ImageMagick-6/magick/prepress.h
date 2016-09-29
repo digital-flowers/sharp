@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickCore prepress methods.
 */
-#ifndef MAGICKCORE_PREPRESS_H
-#define MAGICKCORE_PREPRESS_H
+#ifndef _MAGICKCORE_PREPRESS_H
+#define _MAGICKCORE_PREPRESS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport double
-  GetImageTotalInkDensity(Image *image,ExceptionInfo *);
+  GetImageTotalInkDensity(Image *image);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

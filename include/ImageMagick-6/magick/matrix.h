@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore matrix methods.
 */
-#ifndef MAGICKCORE_MATRIX_H
-#define MAGICKCORE_MATRIX_H
+#ifndef _MAGICKCORE_MATRIX_H
+#define _MAGICKCORE_MATRIX_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -33,6 +33,7 @@ extern MagickExport Image
   *MatrixToImage(const MatrixInfo *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  GaussJordanElimination(double **,double **,const size_t,const size_t),
   GetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,void *),
   NullMatrix(MatrixInfo *),
   SetMatrixElement(const MatrixInfo *,const ssize_t,const ssize_t,const void *);
@@ -44,6 +45,10 @@ MagickExport MatrixInfo
 MagickExport size_t
   GetMatrixColumns(const MatrixInfo *),
   GetMatrixRows(const MatrixInfo *);
+
+extern MagickExport void
+  LeastSquaresAddTerms(double **,double **,const double *,const double *,
+    const size_t,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image view methods.
 */
-#ifndef MAGICKCORE_IMAGE_VIEW_H
-#define MAGICKCORE_IMAGE_VIEW_H
+#ifndef _MAGICKIMAGE_IMAGE_VIEW_H
+#define _MAGICKIMAGE_IMAGE_VIEW_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -37,11 +37,11 @@ typedef MagickBooleanType
 extern MagickExport char
   *GetImageViewException(const ImageView *,ExceptionType *);
 
-extern MagickExport const Quantum
-  *GetImageViewVirtualPixels(const ImageView *);
+extern MagickExport const IndexPacket
+  *GetImageViewVirtualIndexes(const ImageView *);
 
-extern MagickExport const void
-  *GetImageViewVirtualMetacontent(const ImageView *);
+extern MagickExport const PixelPacket
+  *GetImageViewVirtualPixels(const ImageView *);
 
 extern MagickExport Image
   *GetImageViewImage(const ImageView *);
@@ -49,9 +49,12 @@ extern MagickExport Image
 extern MagickExport ImageView
   *CloneImageView(const ImageView *),
   *DestroyImageView(ImageView *),
-  *NewImageView(Image *,ExceptionInfo *),
+  *NewImageView(Image *),
   *NewImageViewRegion(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,ExceptionInfo *);
+    const size_t);
+
+extern MagickExport IndexPacket
+  *GetImageViewAuthenticIndexes(const ImageView *);
 
 extern MagickExport MagickBooleanType
   DuplexTransferImageViewIterator(ImageView *,ImageView *,ImageView *,
@@ -63,7 +66,7 @@ extern MagickExport MagickBooleanType
     void *),
   UpdateImageViewIterator(ImageView *,UpdateImageViewMethod,void *);
 
-extern MagickExport Quantum
+extern MagickExport PixelPacket
   *GetImageViewAuthenticPixels(const ImageView *);
 
 extern MagickExport RectangleInfo
@@ -72,9 +75,6 @@ extern MagickExport RectangleInfo
 extern MagickExport void
   SetImageViewDescription(ImageView *,const char *),
   SetImageViewThreads(ImageView *,const size_t);
-
-extern MagickExport void
-  *GetImageViewAuthenticMetacontent(const ImageView *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
 
   MagickCore log methods.
 */
-#ifndef MAGICKCORE_LOG_H
-#define MAGICKCORE_LOG_H
+#ifndef _MAGICKCORE_LOG_H
+#define _MAGICKCORE_LOG_H
 
-#include "MagickCore/exception.h"
+#include <stdarg.h>
+#include "magick/exception.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -32,9 +33,9 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedEvents = 0x000000,
+  UndefinedEvents,
   NoEvents = 0x00000,
-  AccelerateEvent = 0x00001,
+  TraceEvent = 0x00001,
   AnnotateEvent = 0x00002,
   BlobEvent = 0x00004,
   CacheEvent = 0x00008,
@@ -42,19 +43,17 @@ typedef enum
   ConfigureEvent = 0x00020,
   DeprecateEvent = 0x00040,
   DrawEvent = 0x00080,
-  ExceptionEvent = 0x00100,   /* Log Errors and Warnings immediately */
+  ExceptionEvent = 0x00100,
   ImageEvent = 0x00200,
   LocaleEvent = 0x00400,
-  ModuleEvent = 0x00800,      /* Loding of coder and filter modules */
-  PixelEvent = 0x01000,
-  PolicyEvent = 0x02000,
-  ResourceEvent = 0x04000,
-  TraceEvent = 0x08000,
-  TransformEvent = 0x10000,
-  UserEvent = 0x20000,
-  WandEvent = 0x40000,        /* Log MagickWand */
-  X11Event = 0x80000,
-  CommandEvent = 0x100000,    /* Log Command Processing (CLI & Scripts) */
+  ModuleEvent = 0x00800,
+  PolicyEvent = 0x01000,
+  ResourceEvent = 0x02000,
+  TransformEvent = 0x04000,
+  UserEvent = 0x09000,
+  WandEvent = 0x10000,
+  X11Event = 0x20000,
+  AccelerateEvent = 0x40000,
   AllEvents = 0x7fffffff
 } LogEventType;
 
@@ -80,6 +79,7 @@ extern MagickExport LogEventType
 extern MagickExport MagickBooleanType
   IsEventLogging(void),
   ListLogInfo(FILE *,ExceptionInfo *),
+  LogComponentGenesis(void),
   LogMagickEvent(const LogEventType,const char *,const char *,const size_t,
     const char *,...) 
     magick_attribute((__format__ (__printf__,5,6))),
@@ -88,6 +88,7 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport void
   CloseMagickLog(void),
+  LogComponentTerminus(void),
   SetLogFormat(const char *),
   SetLogMethod(MagickLogMethod);
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image threshold methods.
 */
-#ifndef MAGICKCORE_THRESHOLD_H
-#define MAGICKCORE_THRESHOLD_H
+#ifndef _MAGICKCORE_THRESHOLD_H
+#define _MAGICKCORE_THRESHOLD_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -26,7 +26,7 @@ typedef struct _ThresholdMap
   ThresholdMap;
 
 extern MagickExport Image
-  *AdaptiveThresholdImage(const Image *,const size_t,const size_t,const double,
+  *AdaptiveThresholdImage(const Image *,const size_t,const size_t,const ssize_t,
     ExceptionInfo *);
 
 extern MagickExport ThresholdMap
@@ -34,14 +34,27 @@ extern MagickExport ThresholdMap
   *GetThresholdMap(const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
-  BilevelImage(Image *,const double,ExceptionInfo *),
-  BlackThresholdImage(Image *,const char *,ExceptionInfo *),
-  ClampImage(Image *,ExceptionInfo *),
+  BilevelImage(Image *,const double),
+  BilevelImageChannel(Image *,const ChannelType,const double),
+  BlackThresholdImage(Image *,const char *),
+  BlackThresholdImageChannel(Image *,const ChannelType,const char *,
+    ExceptionInfo *),
+  ClampImage(Image *),
+  ClampImageChannel(Image *,const ChannelType),
   ListThresholdMaps(FILE *,ExceptionInfo *),
-  OrderedDitherImage(Image *,const char *,ExceptionInfo *),
-  PerceptibleImage(Image *,const double,ExceptionInfo *),
-  RandomThresholdImage(Image *,const double,const double,ExceptionInfo *),
-  WhiteThresholdImage(Image *,const char *,ExceptionInfo *);
+  OrderedDitherImage(Image *),  /* deprecated */
+  OrderedDitherImageChannel(Image *,const ChannelType,ExceptionInfo *),
+  OrderedPosterizeImage(Image *,const char *,ExceptionInfo *),
+  OrderedPosterizeImageChannel(Image *,const ChannelType,const char *,
+    ExceptionInfo *),
+  PerceptibleImage(Image *,const double),
+  PerceptibleImageChannel(Image *,const ChannelType,const double),
+  RandomThresholdImage(Image *,const char *,ExceptionInfo *),
+  RandomThresholdImageChannel(Image *,const ChannelType,const char *,
+    ExceptionInfo *),
+  WhiteThresholdImage(Image *,const char *),
+  WhiteThresholdImageChannel(Image *,const ChannelType,const char *,
+    ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

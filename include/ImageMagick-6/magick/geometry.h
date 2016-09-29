@@ -1,12 +1,12 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-
+  
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-
+  
     http://www.imagemagick.org/script/license.php
-
+  
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,8 @@
 
   MagickCore image geometry methods.
 */
-#ifndef MAGICKCORE_GEOMETRY_H
-#define MAGICKCORE_GEOMETRY_H
+#ifndef _MAGICKCORE_GEOMETRY_H
+#define _MAGICKCORE_GEOMETRY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -71,6 +71,7 @@ typedef enum
 #undef SouthWestGravity
 #undef SouthGravity
 #undef SouthEastGravity
+#undef StaticGravity
 #endif
 
 typedef enum
@@ -80,12 +81,13 @@ typedef enum
   NorthWestGravity = 1,
   NorthGravity = 2,
   NorthEastGravity = 3,
-  WestGravity = 4,
+  WestGravity = 4, 
   CenterGravity = 5,
   EastGravity = 6,
   SouthWestGravity = 7,
   SouthGravity = 8,
-  SouthEastGravity = 9
+  SouthEastGravity = 9,
+  StaticGravity = 10 
 } GravityType;
 
 typedef struct _AffineMatrix
@@ -115,13 +117,6 @@ typedef struct _OffsetInfo
     x,
     y;
 } OffsetInfo;
-
-typedef struct _PointInfo
-{
-  double
-    x,
-    y;
-} PointInfo;
 
 typedef struct _RectangleInfo
 {

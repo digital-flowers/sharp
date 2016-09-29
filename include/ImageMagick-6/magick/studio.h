@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore private application programming interface declarations.
 */
-#ifndef MAGICKCORE_STUDIO_H
-#define MAGICKCORE_STUDIO_H
+#ifndef _MAGICKCORE_STUDIO_H
+#define _MAGICKCORE_STUDIO_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -30,20 +30,24 @@ extern "C" {
 
 #define MAGICKCORE_IMPLEMENTATION  1
 
-#if !defined(MAGICKCORE_CONFIG_H)
-# define MAGICKCORE_CONFIG_H
-#include "MagickCore/magick-config.h"
-# if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
+#if !defined(_MAGICKCORE_CONFIG_H)
+# define _MAGICKCORE_CONFIG_H
+# if !defined(vms) && !defined(macintosh)
+#  include "magick/magick-config.h"
+# else
+#  include "magick-config.h"
+# endif
+#if defined(MAGICKCORE__FILE_OFFSET_BITS) && !defined(_FILE_OFFSET_BITS)
 # define _FILE_OFFSET_BITS MAGICKCORE__FILE_OFFSET_BITS
 #endif
-#if __cplusplus > 199711L
-#define register
-#endif  
 #if defined(_magickcore_const) && !defined(const)
 # define const  _magickcore_const
 #endif
 #if defined(_magickcore_inline) && !defined(inline)
 # define inline  _magickcore_inline
+#endif
+#if defined(_magickcore_restrict) && !defined(restrict)
+# define restrict  _magickcore_restrict
 #endif
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
@@ -51,7 +55,7 @@ extern "C" {
 #endif
 
 #if defined(MAGICKCORE_NAMESPACE_PREFIX)
-# include "MagickCore/methods.h"
+# include "magick/methods.h"
 #endif
 
 #if !defined(const)
@@ -69,13 +73,6 @@ extern "C" {
 #else
 # if defined(MAGICKCORE_HAVE_STDLIB_H)
 #  include <stdlib.h>
-# endif
-#endif
-#if !defined(magick_restrict)
-# if !defined(_magickcore_restrict)
-#  define magick_restrict restrict
-# else
-#  define magick_restrict _magickcore_restrict
 # endif
 #endif
 #if defined(MAGICKCORE_HAVE_STRING_H)
@@ -100,8 +97,8 @@ extern "C" {
 #define _CRTDBG_MAP_ALLOC
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include <io.h>
 # include <direct.h>
+# include <io.h>
 # if !defined(MAGICKCORE_HAVE_STRERROR)
 #  define HAVE_STRERROR
 # endif
@@ -123,10 +120,8 @@ extern "C" {
 #if defined(MAGICKCORE_THREAD_SUPPORT)
 # include <pthread.h>
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#  define MAGICKCORE_HAVE_WINTHREADS  1
 #include <windows.h>
-#pragma comment (lib, "ws2_32.lib")
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>
@@ -166,12 +161,12 @@ extern size_t strlcpy(char *,const char *,size_t);
 extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
-#include "MagickCore/method-attribute.h"
+#include "magick/method-attribute.h"
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)
 # include <sys/types.h>
 # include <sys/stat.h>
-# if defined(MAGICKCORE_HAVE_SYS_TIMEB_H)
+# if defined(MAGICKCORE_HAVE_FTIME)
 # include <sys/timeb.h>
 # endif
 # if defined(MAGICKCORE_POSIX_SUPPORT)
@@ -200,7 +195,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # if !defined(S_ISREG)
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
-# include "MagickCore/magick-type.h"
+# include "magick/magick-type.h"
 # if !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  include <sys/time.h>
 # if defined(MAGICKCORE_HAVE_SYS_TIMES_H)
@@ -211,9 +206,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # endif
 # if defined(MAGICKCORE_HAVE_SYS_MMAN_H)
 #  include <sys/mman.h>
-# endif
-# if defined(MAGICKCORE_HAVE_SYS_SENDFILE_H)
-#  include <sys/sendfile.h>
 # endif
 #endif
 #else
@@ -226,7 +218,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  endif
 #  include <unix.h>
 # endif
-# include "MagickCore/magick-type.h"
+# include "magick/magick-type.h"
 #endif
 
 #if defined(S_IRUSR) && defined(S_IWUSR)
@@ -238,10 +230,13 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include "MagickCore/nt-base.h"
+# include "magick/nt-base.h"
 #endif
-#ifdef __VMS
-# include "MagickCore/vms.h"
+#if defined(macintosh)
+# include "magick/mac.h"
+#endif
+#if defined(vms)
+# include "magick/vms.h"
 #endif
 
 #undef HAVE_CONFIG_H
@@ -253,7 +248,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 /*
   Review these platform specific definitions.
 */
-#if defined(MAGICKCORE_POSIX_SUPPORT) &&  !( defined(__OS2__) || defined( vms ) )
+#if defined(MAGICKCORE_POSIX_SUPPORT) && !defined(__OS2__)
 # define DirectorySeparator  "/"
 # define DirectoryListSeparator  ':'
 # define EditorOptions  " -title \"Edit Image Comment\" -e vi"
@@ -264,7 +259,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # define ReadCommandlLine(argc,argv)
 # define SetNotifyHandlers
 #else
-# ifdef __VMS
+# if defined(vms)
 #  define X11_APPLICATION_PATH  "decw$system_defaults:"
 #  define DirectorySeparator  ""
 #  define DirectoryListSeparator  ';'
@@ -291,6 +286,28 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # define ReadCommandlLine(argc,argv)
 # define SetNotifyHandlers
 #endif
+# if defined(macintosh)
+#  define X11_APPLICATION_PATH  "/usr/lib/X11/app-defaults/"
+#  define DirectorySeparator  ":"
+#  define DirectoryListSeparator  ';'
+#  define EditorOptions ""
+#  define IsBasenameSeparator(c)  ((c) == ':' ? MagickTrue : MagickFalse)
+#  define MAGICKCORE_LIBRARY_PATH  ""
+#  define MAGICKCORE_SHARE_PATH  ""
+#  define X11_PREFERENCES_PATH  "~/."
+#  if defined(DISABLE_SIOUX)
+#   define ReadCommandlLine(argc,argv)
+#   define SetNotifyHandlers \
+     SetFatalErrorHandler(MacFatalErrorHandler); \
+     SetErrorHandler(MACErrorHandler); \
+     SetWarningHandler(MACWarningHandler)
+#  else
+#   define ReadCommandlLine(argc,argv) argc=ccommand(argv); puts(MagickVersion);
+#   define SetNotifyHandlers \
+     SetErrorHandler(MACErrorHandler); \
+     SetWarningHandler(MACWarningHandler)
+#  endif
+# endif
 # if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  define DirectorySeparator  "\\"
 #  define DirectoryListSeparator  ';'
@@ -305,6 +322,8 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define SetNotifyHandlers \
     SetErrorHandler(NTErrorHandler); \
     SetWarningHandler(NTWarningHandler)
+#  undef sleep
+#  define sleep(seconds)  Sleep(seconds*1000)
 #  if !defined(MAGICKCORE_HAVE_TIFFCONF_H)
 #    define HAVE_TIFFCONF_H
 #  endif

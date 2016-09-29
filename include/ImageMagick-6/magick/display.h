@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickCore methods to interactively display and edit an image.
 */
-#ifndef MAGICKCORE_DISPLAY_H
-#define MAGICKCORE_DISPLAY_H
+#ifndef _MAGICKCORE_DISPLAY_H
+#define _MAGICKCORE_DISPLAY_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  DisplayImages(const ImageInfo *,Image *,ExceptionInfo *),
+  DisplayImages(const ImageInfo *,Image *),
   RemoteDisplayCommand(const ImageInfo *,const char *,const char *,
     ExceptionInfo *);
 

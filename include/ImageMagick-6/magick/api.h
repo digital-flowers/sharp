@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -13,10 +13,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore option private methods.
+  Deprecated as of ImageMagick 6.2.3.
+
+  MagickCore Application Programming Interface declarations.
 */
-#ifndef MAGICKCORE_OPTION_PRIVATE_H
-#define MAGICKCORE_OPTION_PRIVATE_H
+
+#ifndef _MAGICKCORE_API_DEPRECATED_H
+#define _MAGICKCORE_API_DEPRECATED_H
+
+#include "magick/MagickCore.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

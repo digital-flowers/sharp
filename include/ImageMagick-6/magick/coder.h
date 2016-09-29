@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image coder methods.
 */
-#ifndef MAGICKCORE_CODER_H
-#define MAGICKCORE_CODER_H
+#ifndef _MAGICKCORE_CODER_H
+#define _MAGICKCORE_CODER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -33,6 +33,10 @@ typedef struct _CoderInfo
     exempt,
     stealth;
                                                                                 
+  struct _CoderInfo
+    *previous,
+    *next;  /* deprecated, use GetCoderInfoList() */
+
   size_t
     signature;
 } CoderInfo;
@@ -45,7 +49,11 @@ extern MagickExport const CoderInfo
   **GetCoderInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
+  CoderComponentGenesis(void),
   ListCoderInfo(FILE *,ExceptionInfo *);
+
+MagickExport void
+  CoderComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

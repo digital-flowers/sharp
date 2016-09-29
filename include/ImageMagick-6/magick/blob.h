@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
 
   MagickCore Binary Large OBjects methods.
 */
-#ifndef MAGICKCORE_BLOB_H
-#define MAGICKCORE_BLOB_H
+#ifndef _MAGICKCORE_BLOB_H
+#define _MAGICKCORE_BLOB_H
 
-#include "MagickCore/image.h"
-#include "MagickCore/stream.h"
+#include "magick/image.h"
+#include "magick/stream.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-#define MagickMaxBufferExtent  81920
+#define MagickMaxBufferExtent  (32*8192-2)
 
 typedef enum
 {
@@ -43,7 +43,7 @@ extern MagickExport Image
 
 extern MagickExport MagickBooleanType
   BlobToFile(char *,const void *,const size_t,ExceptionInfo *),
-  FileToImage(Image *,const char *,ExceptionInfo *),
+  FileToImage(Image *,const char *),
   GetBlobError(const Image *),
   ImageToFile(Image *,char *,ExceptionInfo *),
   InjectImageBlob(const ImageInfo *,Image *,Image *,const char *,
@@ -58,13 +58,15 @@ extern MagickExport MagickSizeType
 extern MagickExport StreamHandler
   GetBlobStreamHandler(const Image *);
 
-extern MagickExport void
+extern MagickExport unsigned char
+  *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
   *GetBlobStreamData(const Image *),
+  *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
+  *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *);
+
+extern MagickExport void
   DestroyBlob(Image *),
   DuplicateBlob(Image *,const Image *),
-  *FileToBlob(const char *,const size_t,size_t *,ExceptionInfo *),
-  *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
-  *ImagesToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   SetBlobExempt(Image *,const MagickBooleanType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

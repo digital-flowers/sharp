@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore resource methods.
 */
-#ifndef MAGICKCORE_RESOURCE_H
-#define MAGICKCORE_RESOURCE_H
+#ifndef _MAGICKCORE_RESOURCE_H
+#define _MAGICKCORE_RESOURCE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -28,13 +28,11 @@ typedef enum
   AreaResource,
   DiskResource,
   FileResource,
-  HeightResource,
   MapResource,
   MemoryResource,
   ThreadResource,
-  ThrottleResource,
   TimeResource,
-  WidthResource
+  ThrottleResource
 } ResourceType;
 
 #define MagickResourceInfinity  MagickULLConstant(~0)
@@ -47,6 +45,7 @@ extern MagickExport MagickBooleanType
   GetPathTemplate(char *),
   ListMagickResourceInfo(FILE *,ExceptionInfo *),
   RelinquishUniqueFileResource(const char *),
+  ResourceComponentGenesis(void),
   SetMagickResourceLimit(const ResourceType,const MagickSizeType);
 
 extern MagickExport MagickSizeType
@@ -54,7 +53,9 @@ extern MagickExport MagickSizeType
   GetMagickResourceLimit(const ResourceType);
 
 extern MagickExport void
-  RelinquishMagickResource(const ResourceType,const MagickSizeType);
+  AsynchronousResourceComponentTerminus(void),
+  RelinquishMagickResource(const ResourceType,const MagickSizeType),
+  ResourceComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

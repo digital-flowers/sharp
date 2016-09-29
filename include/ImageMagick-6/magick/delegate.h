@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickCore delegates methods.
 */
-#ifndef MAGICKCORE_DELEGATE_H
-#define MAGICKCORE_DELEGATE_H
+#ifndef _MAGICKCORE_DELEGATE_H
+#define _MAGICKCORE_DELEGATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 #include <stdarg.h>
-#include "MagickCore/semaphore.h"
+#include "magick/semaphore.h"
 
 typedef struct _DelegateInfo
 {
@@ -41,11 +41,15 @@ typedef struct _DelegateInfo
     spawn,
     stealth;
 
-  SemaphoreInfo
-    *semaphore;
+  struct _DelegateInfo
+    *previous,
+    *next;  /* deprecated, use GetDelegateInfoList() */
 
   size_t
     signature;
+
+  SemaphoreInfo
+    *semaphore;
 } DelegateInfo;
 
 extern MagickExport char
@@ -68,9 +72,13 @@ extern MagickExport ssize_t
   GetDelegateMode(const DelegateInfo *);
 
 extern MagickExport MagickBooleanType
+  DelegateComponentGenesis(void),
   GetDelegateThreadSupport(const DelegateInfo *),
   InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
+
+extern MagickExport void
+  DelegateComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickCore magick methods.
 */
-#ifndef MAGICKCORE_MAGICK_H
-#define MAGICKCORE_MAGICK_H
+#ifndef _MAGICKCORE_MAGICK_H
+#define _MAGICKCORE_MAGICK_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 #include <stdarg.h>
-#include "MagickCore/semaphore.h"
+#include "magick/semaphore.h"
 
 typedef enum
 {
@@ -34,23 +34,16 @@ typedef enum
 
 typedef enum
 {
-  CoderNoFlag = 0x0000,
-  CoderAdjoinFlag = 0x0001,
-  CoderBlobSupportFlag = 0x0002,
-  CoderDecoderThreadSupportFlag = 0x0004,
-  CoderEncoderThreadSupportFlag = 0x0008,
-  CoderEndianSupportFlag = 0x0010,
-  CoderRawSupportFlag = 0x0020,
-  CoderSeekableStreamFlag = 0x0040,
-  CoderStealthFlag = 0x0080,
-  CoderUseExtensionFlag = 0x0100
-} MagickInfoFlag;
+  NoThreadSupport = 0x0000,
+  DecoderThreadSupport = 0x0001,
+  EncoderThreadSupport = 0x0002
+} MagickThreadSupport;
 
 typedef Image
   *DecodeImageHandler(const ImageInfo *,ExceptionInfo *);
 
 typedef MagickBooleanType
-  EncodeImageHandler(const ImageInfo *,Image *,ExceptionInfo *);
+  EncodeImageHandler(const ImageInfo *,Image *);
 
 typedef MagickBooleanType
   IsImageFormatHandler(const unsigned char *,const size_t);
@@ -61,9 +54,11 @@ typedef struct _MagickInfo
     *name,
     *description,
     *version,
-    *mime_type,
     *note,
     *module;
+
+  ImageInfo
+    *image_info;
 
   DecodeImageHandler
     *decoder;
@@ -71,26 +66,40 @@ typedef struct _MagickInfo
   EncodeImageHandler
     *encoder;
 
-  ImageInfo
-    *image_info;
-
   IsImageFormatHandler
     *magick;
+
+  void
+    *client_data;
+
+  MagickBooleanType
+    adjoin,
+    raw,
+    endian_support,
+    blob_support,
+    seekable_stream;
 
   MagickFormatType
     format_type;
 
   MagickStatusType
-    flags;
+    thread_support;
 
-  SemaphoreInfo
-    *semaphore;
+  MagickBooleanType
+    stealth;
+
+  struct _MagickInfo
+    *previous,
+    *next;  /* deprecated, use GetMagickInfoList() */
 
   size_t
     signature;
 
-  void
-    *client_data;
+  char
+    *mime_type;
+
+  SemaphoreInfo
+    *semaphore;
 } MagickInfo;
 
 extern MagickExport char
@@ -114,15 +123,11 @@ extern MagickExport MagickBooleanType
   GetImageMagick(const unsigned char *,const size_t,char *),
   GetMagickAdjoin(const MagickInfo *),
   GetMagickBlobSupport(const MagickInfo *),
-  GetMagickDecoderThreadSupport(const MagickInfo *),
-  GetMagickEncoderThreadSupport(const MagickInfo *),
   GetMagickEndianSupport(const MagickInfo *),
   GetMagickRawSupport(const MagickInfo *),
   GetMagickSeekableStream(const MagickInfo *),
-  GetMagickStealth(const MagickInfo *),
-  GetMagickUseExtension(const MagickInfo *),
   IsMagickCoreInstantiated(void),
-  RegisterMagickInfo(MagickInfo *),
+  MagickComponentGenesis(void),
   UnregisterMagickInfo(const char *);
 
 extern const MagickExport MagickInfo
@@ -130,9 +135,14 @@ extern const MagickExport MagickInfo
   **GetMagickInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport MagickInfo
-  *AcquireMagickInfo(const char *, const char *, const char *);
+  *RegisterMagickInfo(MagickInfo *),
+  *SetMagickInfo(const char *);
+
+extern MagickExport MagickStatusType
+  GetMagickThreadSupport(const MagickInfo *);
 
 extern MagickExport void
+  MagickComponentTerminus(void),
   MagickCoreGenesis(const char *,const MagickBooleanType),
   MagickCoreTerminus(void);
 

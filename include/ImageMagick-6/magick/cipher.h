@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore cipher methods.
 */
-#ifndef MAGICKCORE_CIPHER_H
-#define MAGICKCORE_CIPHER_H
+#ifndef _MAGICKCORE_CIPHER_H
+#define _MAGICKCORE_CIPHER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
   MagickCore image distortion methods.
 */
-#ifndef MAGICKCORE_DISTORT_H
-#define MAGICKCORE_DISTORT_H
+#ifndef _MAGICKCORE_DISTORT_H
+#define _MAGICKCORE_DISTORT_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -53,7 +53,7 @@ typedef enum
   ShepardsDistortion,
   ResizeDistortion,
   SentinelDistortion
-} DistortMethod;
+} DistortImageMethod;
 
 typedef enum
 {
@@ -66,18 +66,17 @@ typedef enum
     Methods unique to SparseColor().
   */
   VoronoiColorInterpolate = SentinelDistortion,
-  InverseColorInterpolate,
-  ManhattanColorInterpolate
+  InverseColorInterpolate
 } SparseColorMethod;
 
 extern MagickExport Image
   *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
-  *DistortImage(const Image *,const DistortMethod,const size_t,
+  *DistortImage(const Image *,const DistortImageMethod,const size_t,
     const double *,MagickBooleanType,ExceptionInfo *exception),
   *DistortResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *RotateImage(const Image *,const double,ExceptionInfo *),
-  *SparseColorImage(const Image *,const SparseColorMethod,const size_t,
-    const double *,ExceptionInfo *);
+  *SparseColorImage(const Image *,const ChannelType,const SparseColorMethod,
+    const size_t,const double *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

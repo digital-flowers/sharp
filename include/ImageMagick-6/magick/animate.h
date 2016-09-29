@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2016 ImageMagick Studio LLC, a non-profit organization
+  Copyright 1999-2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 
   MagickCore methods to interactively animate an image sequence.
 */
-#ifndef MAGICKCORE_ANIMATE_H
-#define MAGICKCORE_ANIMATE_H
+#ifndef _MAGICKCORE_ANIMATE_H
+#define _MAGICKCORE_ANIMATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  AnimateImages(const ImageInfo *,Image *,ExceptionInfo *);
+  AnimateImages(const ImageInfo *,Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
